@@ -40,31 +40,42 @@ export default function AddProductModal({
 
     const productData: Omit<Product, "id" | "reviews" | "rating"> = {
       name: formData.name,
+      title: formData.name, // Use name as title
       description: formData.description,
-      images: formData.images.filter((img) => img.trim() !== ""),
-      mrp: parseFloat(formData.mrp) || 0,
+      specifications: {}, // Default empty specifications
+      category: formData.category,
+      old_price: parseFloat(formData.mrp) || 0,
       our_price: parseFloat(formData.our_price) || 0,
+      mrp: parseFloat(formData.mrp) || 0,
+      discount_percentage: parseFloat(formData.discount) || 0,
       discount: parseFloat(formData.discount) || 0,
+      images: formData.images.filter((img) => img.trim() !== ""),
+      in_stock: formData.in_stock,
+      average_rating: 0, // Default rating
+      review_count: 0, // Default review count
+      features: [], // Default empty features
+      tags: [], // Default empty tags
+      sizes: formData.size ? [formData.size] : undefined,
+      colors: formData.color ? [formData.color] : undefined,
+      color: formData.color,
+      size: formData.size,
+      weight: formData.weight,
+      height: formData.height,
+      company: formData.company,
+      stockQuantity: 100, // Default stock quantity
       afterExchangePrice: formData.afterExchangePrice
         ? parseFloat(formData.afterExchangePrice)
         : undefined,
       offers: formData.offers.filter((offer) => offer.trim() !== ""),
       coupons: formData.coupons.filter((coupon) => coupon.trim() !== ""),
-      company: formData.company,
-      color: formData.color,
-      size: formData.size,
-      weight: formData.weight,
-      height: formData.height,
-      category: formData.category,
-      in_stock: formData.in_stock,
-      stockQuantity: 100, // Default stock quantity
       faqs: formData.faqs
         .filter((faq) => faq.question.trim() !== "" && faq.answer.trim() !== "")
-        .map((faq, index) => ({
-          id: (index + 1).toString(),
+        .map((faq) => ({
           question: faq.question,
           answer: faq.answer,
         })),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
 
     onSave(productData);

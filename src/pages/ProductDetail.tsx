@@ -236,7 +236,7 @@ export default function ProductDetail() {
                     Frequently Asked Questions
                   </h2>
                   <div className="space-y-4">
-                    {product.faqs.map((faq) => (
+                    {product.faqs.map((faq : any) => (
                       <div
                         key={faq.id}
                         className="border-b border-gray-200 pb-4 last:border-b-0"
