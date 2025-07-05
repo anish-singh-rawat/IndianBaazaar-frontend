@@ -22,7 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingBag, MapPin, CreditCard } from "lucide-react";
 import { Cart, Product, CreateOrderRequest } from "@shared/types";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 
 const shippingSchema = z.object({
   street: z.string().min(5, "Street address must be at least 5 characters"),
@@ -94,19 +94,22 @@ export default function CheckoutModal({
         .filter(Boolean) as CreateOrderRequest["items"];
 
       // Create order
-      const createOrderResponse = await fetch("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
+
+      const createOrderResponse: any = await axiosInstance.post(
+        "/orders",
+        {
           amount: finalTotal,
           currency: "INR",
           items: orderItems,
           shippingAddress: shippingData,
-        }),
-      });
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       if (!createOrderResponse.ok) {
         const errorData = await createOrderResponse.json();
@@ -126,19 +129,21 @@ export default function CheckoutModal({
         handler: async function (response: any) {
           try {
             // Verify payment
-            const verifyResponse = await fetch("/api/payments/verify", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
+            const verifyResponse : any = await axiosInstance.post(
+              "/payments/verify",
+              {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
                 orderId: orderId,
-              }),
-            });
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            );
 
             if (!verifyResponse.ok) {
               throw new Error("Payment verification failed");

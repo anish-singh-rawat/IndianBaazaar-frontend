@@ -7,6 +7,7 @@ import {
 } from "react";
 import { Notification } from "@shared/types";
 import { useAuth } from "./AuthContext";
+import axiosInstance from "@/lib/axios";
 
 interface NotificationContextType {
   notifications: Notification[];
@@ -39,7 +40,8 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch("/api/notifications", {
+
+      const response: any = await axiosInstance.get("/notifications", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -75,13 +77,15 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   const markAsRead = async (id: string) => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`/api/notifications/${id}/read`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response : any = await axiosInstance.patch(
+        `/notifications/${id}/read`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
-
+      );
       if (response.ok) {
         setNotifications((prev) =>
           prev.map((notification) =>

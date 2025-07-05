@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Filter, Grid, List } from "lucide-react";
+import { Grid, List } from "lucide-react";
 import Layout from "@/components/Layout";
 import HeroSlider from "@/components/HeroSlider";
 import ProductCard from "@/components/ProductCard";
@@ -119,7 +119,7 @@ export default function Index() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div className="flex items-center gap-4">
                 <span className="text-gray-600 font-medium">
-                  {filteredProducts.length} Products
+                  {filteredProducts?.length} Products
                 </span>
               </div>
 
@@ -178,7 +178,7 @@ export default function Index() {
                   Try Again
                 </Button>
               </div>
-            ) : filteredProducts.length === 0 ? (
+            ) : filteredProducts?.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-gray-500 text-lg">
                   No products found in this category.
@@ -192,7 +192,7 @@ export default function Index() {
                     : "space-y-4"
                 }
               >
-                {filteredProducts.map((product) => (
+                {filteredProducts?.map((product) => (
                   <ProductCard
                     key={product.id}
                     product={product}

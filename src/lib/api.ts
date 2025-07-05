@@ -3,20 +3,8 @@ import {
   ProductsResponse,
   ProductResponse,
   SearchSuggestionsResponse,
-  ReviewsResponse,
-  CreateReviewResponse,
-  OrdersResponse,
-  OrderResponse,
-  CreateOrderResponse,
-  PaymentVerificationResponse,
-  NotificationsResponse,
-  AdminStatsResponse,
-  AdminCustomersResponse,
-  AdminOrdersResponse,
 } from "@shared/api";
-import axios from "axios";
-
-const API_BASE = "/api";
+import axiosInstance from "./axios";
 
 export const api = {
   // Product APIs
@@ -36,27 +24,23 @@ export const api = {
     if (params?.in_stock) {
       searchParams.append("in_stock", "true");
     }
-
-    const response = await fetch(`${API_BASE}/products?${searchParams}`);
-    if (!response.ok) {
+    const response = await axiosInstance.get(`/products?${searchParams}`);
+    if (response.status !== 200) {
       throw new Error("Failed to fetch products");
     }
 
-    const data: ProductsResponse = await response.json();
+    const data: ProductsResponse = response.data;
     return data.products;
   },
 
   async getProductById(id: string): Promise<Product | null> {
     try {
-      const response = await fetch(`${API_BASE}/products/${id}`);
-      if (!response.ok) {
-        if (response.status === 404) {
-          return null;
-        }
-        throw new Error("Failed to fetch product");
+      const response = await axiosInstance.get(`/products/${id}`);
+      if (response.status === 404) {
+        return null;
       }
 
-      const data: ProductResponse = await response.json();
+      const data: ProductResponse = response.data;
       return data.product;
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -65,28 +49,23 @@ export const api = {
   },
 
   async getProductsReviews(productId: string): Promise<any> {
-    const response: any = await axios.get(
-      `${API_BASE}/products/${productId}/reviews`,
-    );
+    const response = await axiosInstance.get(`/products/${productId}/reviews`);
     return response.data;
   },
 
-  async getSearchSuggestions(
-    query: string,
-  ): Promise<SearchSuggestionsResponse["suggestions"]> {
+  async getSearchSuggestions(query: string): Promise<SearchSuggestionsResponse["suggestions"]> {
     if (!query || query.trim().length < 2) {
       return [];
     }
 
     try {
-      const response = await fetch(
-        `${API_BASE}/products/search/suggestions?q=${encodeURIComponent(query)}`,
-      );
-      if (!response.ok) {
+      const response = await axiosInstance.get(`/products/search/suggestions?q=${encodeURIComponent(query)}`);
+      
+      if (response.status !== 200) {
         throw new Error("Failed to fetch search suggestions");
       }
 
-      const data: SearchSuggestionsResponse = await response.json();
+      const data: SearchSuggestionsResponse = response.data;
       return data.suggestions;
     } catch (error) {
       console.error("Error fetching search suggestions:", error);
@@ -96,12 +75,12 @@ export const api = {
 
   async getProductsByCategory(category: string): Promise<Product[]> {
     try {
-      const response = await fetch(`${API_BASE}/products/category/${category}`);
-      if (!response.ok) {
+      const response = await axiosInstance.get(`/products/category/${category}`);
+      if (response.status !== 200) {
         throw new Error("Failed to fetch products by category");
       }
 
-      const data: ProductsResponse = await response.json();
+      const data: ProductsResponse = response.data;
       return data.products;
     } catch (error) {
       console.error("Error fetching products by category:", error);
@@ -122,30 +101,29 @@ export const productApi = {
 export const reviewApi = {
   async createReview(productId: string, rating: number, comment: string) {
     const token = localStorage.getItem("authToken");
-    const response = await fetch(`${API_BASE}/reviews`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ productId, rating, comment }),
-    });
+    const response = await axiosInstance.post(
+      `/reviews`,
+      { productId, rating, comment },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-    if (!response.ok) {
-      const error = await response.json();
+    if (response.status !== 200) {
+      const error = response.data;
       throw new Error(error.error || "Failed to create review");
     }
 
-    return response.json();
+    return response.data;
   },
 
   async getProductReviews(productId: string) {
     try {
-      const response = await fetch(`${API_BASE}/products/${productId}/reviews`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch reviews");
-      }
-      return response.json();
+      const response = await axiosInstance.get(`/products/${productId}/reviews`);
+      return response.data;
     } catch (error) {
       console.error("Error fetching reviews:", error);
       return { reviews: [] };
@@ -157,70 +135,74 @@ export const reviewApi = {
 export const orderApi = {
   async createOrder(orderData: any) {
     const token = localStorage.getItem("authToken");
-    const response = await fetch(`${API_BASE}/orders`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(orderData),
-    });
+    const response = await axiosInstance.post(
+      `/orders`,
+      orderData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-    if (!response.ok) {
-      const error = await response.json();
+    if (response.status !== 200) {
+      const error = response.data;
       throw new Error(error.error || "Failed to create order");
     }
 
-    return response.json();
+    return response.data;
   },
 
   async verifyPayment(paymentData: any) {
     const token = localStorage.getItem("authToken");
-    const response = await fetch(`${API_BASE}/payments/verify`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(paymentData),
-    });
+    const response = await axiosInstance.post(
+      `/payments/verify`,
+      paymentData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-    if (!response.ok) {
-      const error = await response.json();
+    if (response.status !== 200) {
+      const error = response.data;
       throw new Error(error.error || "Payment verification failed");
     }
 
-    return response.json();
+    return response.data;
   },
 
   async getOrders() {
     const token = localStorage.getItem("authToken");
-    const response = await fetch(`${API_BASE}/orders`, {
+    const response = await axiosInstance.get(`/orders`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Failed to fetch orders");
     }
 
-    return response.json();
+    return response.data;
   },
 
   async getOrderById(orderId: string) {
     const token = localStorage.getItem("authToken");
-    const response = await fetch(`${API_BASE}/orders/${orderId}`, {
+    const response = await axiosInstance.get(`/orders/${orderId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Failed to fetch order");
     }
 
-    return response.json();
+    return response.data;
   },
 };
 
@@ -229,38 +211,37 @@ export const adminApi = {
   // For now, using the same product API
   getProducts: () => api.getProducts(),
   getStats: async () => {
-    // This would call admin stats endpoint
-    const response = await fetch(`${API_BASE}/admin/stats`, {
+    const response = await axiosInstance.get(`/admin/stats`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },
     });
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Failed to fetch admin stats");
     }
-    return response.json();
+    return response.data;
   },
   getCustomers: async () => {
-    const response = await fetch(`${API_BASE}/admin/customers`, {
+    const response = await axiosInstance.get(`/admin/customers`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },
     });
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Failed to fetch customers");
     }
-    return response.json();
+    return response.data;
   },
   getOrders: async () => {
-    const response = await fetch(`${API_BASE}/admin/orders`, {
+    const response = await axiosInstance.get(`/admin/orders`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },
     });
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Failed to fetch orders");
     }
-    return response.json();
+    return response.data;
   },
 };
 
@@ -268,36 +249,36 @@ export const adminApi = {
 export const notificationApi = {
   async getNotifications() {
     const token = localStorage.getItem("authToken");
-    const response = await fetch(`${API_BASE}/notifications`, {
+    const response = await axiosInstance.get(`/notifications`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Failed to fetch notifications");
     }
 
-    return response.json();
+    return response.data;
   },
 
   async markAsRead(notificationId: string) {
     const token = localStorage.getItem("authToken");
-    const response = await fetch(
-      `${API_BASE}/notifications/${notificationId}/read`,
+    const response = await axiosInstance.patch(
+      `/notifications/${notificationId}/read`,
+      {},
       {
-        method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Failed to mark notification as read");
     }
 
-    return response.json();
+    return response.data;
   },
 
   async createNotification(notificationData: {
@@ -307,60 +288,58 @@ export const notificationApi = {
     userId?: string;
   }) {
     const token = localStorage.getItem("authToken");
-    const response = await fetch(`${API_BASE}/notifications`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(notificationData),
-    });
+    const response = await axiosInstance.post(
+      `/notifications`,
+      notificationData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-    if (!response.ok) {
-      const error = await response.json();
+    if (response.status !== 200) {
+      const error = response.data;
       throw new Error(error.error || "Failed to create notification");
     }
 
-    return response.json();
+    return response.data;
   },
 
   async deleteNotification(notificationId: string) {
     const token = localStorage.getItem("authToken");
-    const response = await fetch(
-      `${API_BASE}/notifications/${notificationId}`,
+    const response = await axiosInstance.delete(
+      `/notifications/${notificationId}`,
       {
-        method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Failed to delete notification");
     }
 
-    return response.json();
+    return response.data;
   },
 };
 
 // Auth APIs
 export const authApi = {
   async login(email: string, password: string) {
-    const response = await fetch(`${API_BASE}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
+    const response = await axiosInstance.post(`/auth/login`, {
+      email,
+      password,
     });
 
-    if (!response.ok) {
-      const error = await response.json();
+    if (response.status !== 200) {
+      const error = response.data;
       throw new Error(error.error || "Login failed");
     }
 
-    return response.json();
+    return response.data;
   },
 
   async register(userData: {
@@ -370,35 +349,29 @@ export const authApi = {
     mobileNumber?: string;
     gender?: "male" | "female" | "other";
   }) {
-    const response = await fetch(`${API_BASE}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
+    const response = await axiosInstance.post(`/auth/register`, userData);
 
-    if (!response.ok) {
-      const error = await response.json();
+    if (response.status !== 200) {
+      const error = response.data;
       throw new Error(error.error || "Registration failed");
     }
 
-    return response.json();
+    return response.data;
   },
 
   async getProfile() {
     const token = localStorage.getItem("authToken");
-    const response = await fetch(`${API_BASE}/auth/profile`, {
+    const response = await axiosInstance.get(`/auth/profile`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Failed to fetch profile");
     }
 
-    return response.json();
+    return response.data;
   },
 
   async googleAuth(googleData: {
@@ -406,19 +379,13 @@ export const authApi = {
     email: string;
     name: string;
   }) {
-    const response = await fetch(`${API_BASE}/auth/google`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(googleData),
-    });
+    const response = await axiosInstance.post(`/auth/google`, googleData);
 
-    if (!response.ok) {
-      const error = await response.json();
+    if (response.status !== 200) {
+      const error = response.data;
       throw new Error(error.error || "Google authentication failed");
     }
 
-    return response.json();
+    return response.data;
   },
 };

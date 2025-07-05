@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Product, Order, User } from "@shared/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/contexts/NotificationContext";
-import { productApi, adminApi } from "@/lib/api";
+import axiosInstance from "@/lib/axios";
 
 interface DashboardStats {
   totalProducts: number;
@@ -94,12 +94,12 @@ export default function Admin() {
       };
 
       // Fetch all data in parallel
-      const [statsRes, productsRes, ordersRes, customersRes] =
+      const [statsRes, productsRes, ordersRes, customersRes]: any =
         await Promise.all([
-          fetch("/api/admin/stats", { headers }),
-          fetch("/api/products", { headers }),
-          fetch("/api/admin/orders", { headers }),
-          fetch("/api/admin/customers", { headers }),
+          axiosInstance.get("/admin/stats", { headers }),
+          axiosInstance.get("/products", { headers }),
+          axiosInstance.get("/admin/orders", { headers }),
+          axiosInstance.get("/admin/customers", { headers }),
         ]);
 
       if (statsRes.ok) {
@@ -133,15 +133,12 @@ export default function Admin() {
   ) => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch("/api/products", {
-        method: "POST",
+      const response: any = await axiosInstance.post("/products", productData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(productData),
       });
-
       if (response.ok) {
         const data = await response.json();
         setProducts((prev) => [data.product, ...prev]);
@@ -168,14 +165,16 @@ export default function Admin() {
   ) => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`/api/products/${productId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const response: any = await axiosInstance.put(
+        `/products/${productId}`,
+        productData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         },
-        body: JSON.stringify(productData),
-      });
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -202,8 +201,7 @@ export default function Admin() {
 
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`/api/products/${productId}`, {
-        method: "DELETE",
+      const response: any = await axiosInstance.delete(`/products/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -229,14 +227,17 @@ export default function Admin() {
   const updateOrderStatus = async (orderId: number, newStatus: string) => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`/api/admin/orders/${orderId}/status`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+
+      const response : any = await axiosInstance.patch(
+        `/admin/orders/${orderId}/status`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         },
-        body: JSON.stringify({ status: newStatus }),
-      });
+      );
 
       if (response.ok) {
         setOrders((prev: any) =>
@@ -527,22 +528,24 @@ export default function Admin() {
                             className="border-b border-gray-100"
                           >
                             <td className="py-4 px-4 cursor-pointer">
-                              <Link  to={`/product/${product.id}`}>
-                              <div className="flex items-center gap-3">
-                                <img
-                                  src={product.images[0] || "/placeholder.svg"}
-                                  alt={product.name}
-                                  className="w-12 h-12 object-cover rounded-lg"
-                                />
-                                <div>
-                                  <p className="font-medium text-gray-900 line-clamp-1">
-                                    {product.name}
-                                  </p>
-                                  <p className="text-sm text-gray-500">
-                                    {product.company}
-                                  </p>
+                              <Link to={`/product/${product.id}`}>
+                                <div className="flex items-center gap-3">
+                                  <img
+                                    src={
+                                      product.images[0] || "/placeholder.svg"
+                                    }
+                                    alt={product.name}
+                                    className="w-12 h-12 object-cover rounded-lg"
+                                  />
+                                  <div>
+                                    <p className="font-medium text-gray-900 line-clamp-1">
+                                      {product.name}
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                      {product.company}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
                               </Link>
                             </td>
                             <td className="py-4 px-4 capitalize text-gray-600">

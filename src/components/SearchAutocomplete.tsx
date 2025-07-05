@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Search, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { SearchSuggestion } from "@shared/types";
+import axiosInstance from "@/lib/axios";
 
 interface SearchAutocompleteProps {
   className?: string;
@@ -48,8 +49,8 @@ export default function SearchAutocomplete({
 
       setLoading(true);
       try {
-        const response = await fetch(
-          `/api/products/search/suggestions?q=${encodeURIComponent(query)}`,
+        const response : any = await axiosInstance.get(
+          `/products/search/suggestions?q=${encodeURIComponent(query)}`,
         );
         if (response.ok) {
           const data = await response.json();

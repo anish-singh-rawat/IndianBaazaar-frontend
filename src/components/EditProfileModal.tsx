@@ -24,6 +24,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import axiosInstance from "@/lib/axios";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -82,13 +83,11 @@ export default function EditProfileModal({
         throw new Error("Authentication token not found");
       }
 
-      const response = await fetch("/api/auth/profile", {
-        method: "PUT",
+      const response : any = await axiosInstance.put("/auth/profile", data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
       });
 
       if (!response.ok) {

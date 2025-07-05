@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, AuthResponse } from "@shared/types";
+import axiosInstance from "@/lib/axios";
 
 interface AuthContextType {
   user: User | null;
@@ -47,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const validateToken = async (token: string) => {
     try {
-      const response = await fetch("/api/auth/profile", {
+      const response: any = await axiosInstance.get("/auth/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -69,13 +70,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response: any = await axiosInstance.post(
+        "/auth/login",
+        { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-        body: JSON.stringify({ email, password }),
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -93,22 +96,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const register = async (userData: RegisterData) => {
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
+      const response : any = await axiosInstance.post("/auth/register", userData, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userData),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Registration failed");
+        throw new Error(response.error || "Registration failed");
       }
-
-      const data: AuthResponse = await response.json();
-      localStorage.setItem("authToken", data.token);
-      setUser(data.user);
+      console.log("response  : response",response)
+      localStorage.setItem("authToken", response.token);
+      setUser(response.user);
     } catch (error) {
       console.error("Registration error:", error);
       throw error;

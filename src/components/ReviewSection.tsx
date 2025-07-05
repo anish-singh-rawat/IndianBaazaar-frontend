@@ -15,9 +15,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Review } from "@shared/types";
+import axiosInstance from "@/lib/axios";
 
 const reviewSchema = z.object({
   rating: z.number().min(1, "Please select a rating").max(5),
@@ -35,7 +35,7 @@ export default function ReviewSection({
   reviews,
   onReviewAdded,
 }: ReviewSectionProps) {
-  console.log("first us eEffect",reviews);
+  console.log("first us eEffect", reviews);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -68,18 +68,20 @@ export default function ReviewSection({
         throw new Error("Please login to submit a review");
       }
 
-      const response = await fetch("/api/reviews", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
+      const response: any = await axiosInstance.post(
+        "/reviews",
+        {
           productId,
           rating: data.rating,
           comment: data.comment,
-        }),
-      });
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       console.log("product response", response);
 
