@@ -94,7 +94,7 @@ export default function Admin() {
       };
 
       // Fetch all data in parallel
-      const [statsRes, productsRes, ordersRes, customersRes]: any =
+      const [statsRes, productsRes, ordersRes, customersRes] =
         await Promise.all([
           axiosInstance.get("/admin/stats", { headers }),
           axiosInstance.get("/products", { headers }),
@@ -102,25 +102,10 @@ export default function Admin() {
           axiosInstance.get("/admin/customers", { headers }),
         ]);
 
-      if (statsRes.ok) {
-        const statsData = await statsRes.json();
-        setStats(statsData.stats);
-      }
-
-      if (productsRes.ok) {
-        const productsData = await productsRes.json();
-        setProducts(productsData.products);
-      }
-
-      if (ordersRes.ok) {
-        const ordersData = await ordersRes.json();
-        setOrders(ordersData.orders);
-      }
-
-      if (customersRes.ok) {
-        const customersData = await customersRes.json();
-        setCustomers(customersData.customers);
-      }
+      setStats(statsRes.data.stats);
+      setProducts(productsRes.data.products);
+      setOrders(ordersRes.data.orders);
+      setCustomers(customersRes.data.customers);
     } catch (error) {
       console.error("Error fetching admin data:", error);
     } finally {
@@ -133,29 +118,23 @@ export default function Admin() {
   ) => {
     try {
       const token = localStorage.getItem("authToken");
-      const response: any = await axiosInstance.post("/products", productData, {
+      const response = await axiosInstance.post("/products", productData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-      if (response.ok) {
-        const data = await response.json();
-        setProducts((prev) => [data.product, ...prev]);
-        if (stats) {
-          setStats((prev) =>
-            prev ? { ...prev, totalProducts: prev.totalProducts + 1 } : null,
-          );
-        }
-        // Refresh notifications to show new product notification
-        refreshNotifications();
-      } else {
-        const errorData = await response.json();
-        alert(`Error adding product: ${errorData.error}`);
+      
+      setProducts((prev) => [response.data.product, ...prev]);
+      if (stats) {
+        setStats((prev) =>
+          prev ? { ...prev, totalProducts: prev.totalProducts + 1 } : null,
+        );
       }
-    } catch (error) {
+      refreshNotifications();
+    } catch (error: any) {
       console.error("Error adding product:", error);
-      alert("Failed to add product");
+      alert(`Error adding product: ${error.response?.data?.error || error.message}`);
     }
   };
 
@@ -165,7 +144,7 @@ export default function Admin() {
   ) => {
     try {
       const token = localStorage.getItem("authToken");
-      const response: any = await axiosInstance.put(
+      const response = await axiosInstance.put(
         `/products/${productId}`,
         productData,
         {
@@ -176,18 +155,12 @@ export default function Admin() {
         },
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        setProducts((prev) =>
-          prev.map((p) => (p.id === productId ? data.product : p)),
-        );
-      } else {
-        const errorData = await response.json();
-        alert(`Error updating product: ${errorData.error}`);
-      }
-    } catch (error) {
+      setProducts((prev) =>
+        prev.map((p) => (p.id === productId ? response.data.product : p)),
+      );
+    } catch (error: any) {
       console.error("Error updating product:", error);
-      alert("Failed to update product");
+      alert(`Error updating product: ${error.response?.data?.error || error.message}`);
     }
   };
 
@@ -201,26 +174,21 @@ export default function Admin() {
 
     try {
       const token = localStorage.getItem("authToken");
-      const response: any = await axiosInstance.delete(`/products/${productId}`, {
+      await axiosInstance.delete(`/products/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (response.ok) {
-        setProducts((prev) => prev.filter((p) => p.id !== productId));
-        if (stats) {
-          setStats((prev) =>
-            prev ? { ...prev, totalProducts: prev.totalProducts - 1 } : null,
-          );
-        }
-      } else {
-        const errorData = await response.json();
-        alert(`Error deleting product: ${errorData.error}`);
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
+      if (stats) {
+        setStats((prev) =>
+          prev ? { ...prev, totalProducts: prev.totalProducts - 1 } : null,
+        );
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting product:", error);
-      alert("Failed to delete product");
+      alert(`Error deleting product: ${error.response?.data?.error || error.message}`);
     }
   };
 
@@ -228,7 +196,7 @@ export default function Admin() {
     try {
       const token = localStorage.getItem("authToken");
 
-      const response : any = await axiosInstance.patch(
+      await axiosInstance.patch(
         `/admin/orders/${orderId}/status`,
         { status: newStatus },
         {
@@ -239,23 +207,18 @@ export default function Admin() {
         },
       );
 
-      if (response.ok) {
-        setOrders((prev: any) =>
-          prev.map((order: any) =>
-            order.id === orderId
-              ? { ...order, status: newStatus as any }
-              : order,
-          ),
-        );
-        // Refresh stats
-        fetchAdminData();
-      } else {
-        const errorData = await response.json();
-        alert(`Error updating order: ${errorData.error}`);
-      }
-    } catch (error) {
+      setOrders((prev: any) =>
+        prev.map((order: any) =>
+          order.id === orderId
+            ? { ...order, status: newStatus as any }
+            : order,
+        ),
+      );
+      // Refresh stats
+      fetchAdminData();
+    } catch (error: any) {
       console.error("Error updating order:", error);
-      alert("Failed to update order status");
+      alert(`Error updating order: ${error.response?.data?.error || error.message}`);
     }
   };
 

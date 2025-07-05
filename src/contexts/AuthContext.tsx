@@ -48,18 +48,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const validateToken = async (token: string) => {
     try {
-      const response: any = await axiosInstance.get("/auth/profile", {
+      const response = await axiosInstance.get("/auth/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
-      } else {
-        localStorage.removeItem("authToken");
-      }
+      setUser(response.data.user);
     } catch (error) {
       console.error("Token validation error:", error);
       localStorage.removeItem("authToken");
@@ -70,7 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const login = async (email: string, password: string) => {
     try {
-      const response: any = await axiosInstance.post(
+      const response = await axiosInstance.post(
         "/auth/login",
         { email, password },
         {
@@ -80,37 +74,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         },
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Login failed");
-      }
-
-      const data: AuthResponse = await response.json();
+      const data: AuthResponse = response.data;
       localStorage.setItem("authToken", data.token);
       setUser(data.user);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login error:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "Login failed");
     }
   };
 
   const register = async (userData: RegisterData) => {
     try {
-      const response : any = await axiosInstance.post("/auth/register", userData, {
+      const response = await axiosInstance.post("/auth/register", userData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      if (!response.ok) {
-        throw new Error(response.error || "Registration failed");
-      }
-      console.log("response  : response",response)
-      localStorage.setItem("authToken", response.token);
-      setUser(response.user);
-    } catch (error) {
+      localStorage.setItem("authToken", response.data.token);
+      setUser(response.data.user);
+    } catch (error: any) {
       console.error("Registration error:", error);
-      throw error;
+      throw new Error(error.response?.data?.error || "Registration failed");
     }
   };
 

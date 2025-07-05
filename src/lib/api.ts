@@ -25,24 +25,17 @@ export const api = {
       searchParams.append("in_stock", "true");
     }
     const response = await axiosInstance.get(`/products?${searchParams}`);
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch products");
-    }
-
-    const data: ProductsResponse = response.data;
-    return data.products;
+    return response.data.products;
   },
 
   async getProductById(id: string): Promise<Product | null> {
     try {
       const response = await axiosInstance.get(`/products/${id}`);
-      if (response.status === 404) {
+      return response.data.product;
+    } catch (error: any) {
+      if (error.response?.status === 404) {
         return null;
       }
-
-      const data: ProductResponse = response.data;
-      return data.product;
-    } catch (error) {
       console.error("Error fetching product:", error);
       return null;
     }
@@ -60,13 +53,7 @@ export const api = {
 
     try {
       const response = await axiosInstance.get(`/products/search/suggestions?q=${encodeURIComponent(query)}`);
-      
-      if (response.status !== 200) {
-        throw new Error("Failed to fetch search suggestions");
-      }
-
-      const data: SearchSuggestionsResponse = response.data;
-      return data.suggestions;
+      return response.data.suggestions;
     } catch (error) {
       console.error("Error fetching search suggestions:", error);
       return [];
@@ -76,12 +63,7 @@ export const api = {
   async getProductsByCategory(category: string): Promise<Product[]> {
     try {
       const response = await axiosInstance.get(`/products/category/${category}`);
-      if (response.status !== 200) {
-        throw new Error("Failed to fetch products by category");
-      }
-
-      const data: ProductsResponse = response.data;
-      return data.products;
+      return response.data.products;
     } catch (error) {
       console.error("Error fetching products by category:", error);
       return [];
@@ -111,12 +93,6 @@ export const reviewApi = {
         },
       }
     );
-
-    if (response.status !== 200) {
-      const error = response.data;
-      throw new Error(error.error || "Failed to create review");
-    }
-
     return response.data;
   },
 
@@ -145,12 +121,6 @@ export const orderApi = {
         },
       }
     );
-
-    if (response.status !== 200) {
-      const error = response.data;
-      throw new Error(error.error || "Failed to create order");
-    }
-
     return response.data;
   },
 
@@ -166,12 +136,6 @@ export const orderApi = {
         },
       }
     );
-
-    if (response.status !== 200) {
-      const error = response.data;
-      throw new Error(error.error || "Payment verification failed");
-    }
-
     return response.data;
   },
 
@@ -182,11 +146,6 @@ export const orderApi = {
         Authorization: `Bearer ${token}`,
       },
     });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch orders");
-    }
-
     return response.data;
   },
 
@@ -197,18 +156,11 @@ export const orderApi = {
         Authorization: `Bearer ${token}`,
       },
     });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch order");
-    }
-
     return response.data;
   },
 };
 
 export const adminApi = {
-  // These would be admin-specific API calls
-  // For now, using the same product API
   getProducts: () => api.getProducts(),
   getStats: async () => {
     const response = await axiosInstance.get(`/admin/stats`, {
@@ -216,9 +168,6 @@ export const adminApi = {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },
     });
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch admin stats");
-    }
     return response.data;
   },
   getCustomers: async () => {
@@ -227,9 +176,6 @@ export const adminApi = {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },
     });
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch customers");
-    }
     return response.data;
   },
   getOrders: async () => {
@@ -238,9 +184,6 @@ export const adminApi = {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },
     });
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch orders");
-    }
     return response.data;
   },
 };
@@ -254,11 +197,6 @@ export const notificationApi = {
         Authorization: `Bearer ${token}`,
       },
     });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch notifications");
-    }
-
     return response.data;
   },
 
@@ -273,11 +211,6 @@ export const notificationApi = {
         },
       }
     );
-
-    if (response.status !== 200) {
-      throw new Error("Failed to mark notification as read");
-    }
-
     return response.data;
   },
 
@@ -298,12 +231,6 @@ export const notificationApi = {
         },
       }
     );
-
-    if (response.status !== 200) {
-      const error = response.data;
-      throw new Error(error.error || "Failed to create notification");
-    }
-
     return response.data;
   },
 
@@ -317,18 +244,13 @@ export const notificationApi = {
         },
       }
     );
-
-    if (response.status !== 200) {
-      throw new Error("Failed to delete notification");
-    }
-
     return response.data;
   },
 };
 
 // Auth APIs
 export const authApi = {
-  async login(email: string, password: string) {
+  async login(email: string, password: string)  {
     const response = await axiosInstance.post(`/auth/login`, {
       email,
       password,

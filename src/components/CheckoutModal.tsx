@@ -94,8 +94,7 @@ export default function CheckoutModal({
         .filter(Boolean) as CreateOrderRequest["items"];
 
       // Create order
-
-      const createOrderResponse: any = await axiosInstance.post(
+      const createOrderResponse = await axiosInstance.post(
         "/orders",
         {
           amount: finalTotal,
@@ -111,12 +110,7 @@ export default function CheckoutModal({
         },
       );
 
-      if (!createOrderResponse.ok) {
-        const errorData = await createOrderResponse.json();
-        throw new Error(errorData.error || "Failed to create order");
-      }
-
-      const { orderId, razorpayOrder } = await createOrderResponse.json();
+      const { orderId, razorpayOrder } = createOrderResponse.data;
 
       // Initialize Razorpay
       const options = {
@@ -129,7 +123,7 @@ export default function CheckoutModal({
         handler: async function (response: any) {
           try {
             // Verify payment
-            const verifyResponse : any = await axiosInstance.post(
+            await axiosInstance.post(
               "/payments/verify",
               {
                 razorpay_order_id: response.razorpay_order_id,
@@ -144,10 +138,6 @@ export default function CheckoutModal({
                 },
               },
             );
-
-            if (!verifyResponse.ok) {
-              throw new Error("Payment verification failed");
-            }
 
             // Clear cart
             localStorage.removeItem("indianbaazaar-cart");
@@ -179,12 +169,10 @@ export default function CheckoutModal({
           "Payment gateway not loaded. Please refresh and try again.",
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Checkout error:", error);
       setError(
-        error instanceof Error
-          ? error.message
-          : "An error occurred during checkout",
+        error.response?.data?.error || "An error occurred during checkout",
       );
     } finally {
       setIsProcessing(false);

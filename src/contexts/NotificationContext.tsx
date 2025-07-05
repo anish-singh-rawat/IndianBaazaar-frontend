@@ -40,32 +40,24 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
-
-      const response: any = await axiosInstance.get("/notifications", {
+      const response = await axiosInstance.get("/notifications", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      // Filter notifications from past 7 days
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-        // Filter notifications from past 7 days
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      const recentNotifications = response.data.notifications.filter(
+        (notification: Notification) => {
+          const notificationDate = new Date(notification.createdAt);
+          return notificationDate >= sevenDaysAgo;
+        },
+      );
 
-        const recentNotifications = data.notifications.filter(
-          (notification: Notification) => {
-            const notificationDate = new Date(notification.createdAt);
-            return notificationDate >= sevenDaysAgo;
-          },
-        );
-
-        setNotifications(recentNotifications);
-      } else {
-        console.error("Failed to fetch notifications");
-        setNotifications([]);
-      }
+      setNotifications(recentNotifications);
     } catch (error) {
       console.error("Error fetching notifications:", error);
       setNotifications([]);
@@ -77,7 +69,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   const markAsRead = async (id: string) => {
     try {
       const token = localStorage.getItem("authToken");
-      const response : any = await axiosInstance.patch(
+      await axiosInstance.patch(
         `/notifications/${id}/read`,
         {},
         {
@@ -86,15 +78,14 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
           },
         },
       );
-      if (response.ok) {
-        setNotifications((prev) =>
-          prev.map((notification) =>
-            notification.id === id
-              ? { ...notification, isRead: true }
-              : notification,
-          ),
-        );
-      }
+      
+      setNotifications((prev) =>
+        prev.map((notification) =>
+          notification.id === id
+            ? { ...notification, isRead: true }
+            : notification,
+        ),
+      );
     } catch (error) {
       console.error("Error marking notification as read:", error);
     }
@@ -133,6 +124,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     </NotificationContext.Provider>
   );
 }
+
 
 export function useNotifications() {
   const context = useContext(NotificationContext);

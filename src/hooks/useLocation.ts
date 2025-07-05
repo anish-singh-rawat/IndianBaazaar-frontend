@@ -59,15 +59,11 @@ export const useLocation = () => {
       const { latitude, longitude } = position.coords;
 
       // Reverse geocoding using OpenStreetMap Nominatim (free service)
-      const geocodingResponse : any = await axios.get(
+      const geocodingResponse = await axios.get(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
       );
 
-      if (!geocodingResponse.ok) {
-        throw new Error("Failed to get address information");
-      }
-
-      const geocodingData = await geocodingResponse.json();
+      const geocodingData = geocodingResponse.data;
       const address = geocodingData.address;
 
       // Extract location information

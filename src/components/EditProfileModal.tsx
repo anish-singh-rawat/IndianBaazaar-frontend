@@ -83,26 +83,20 @@ export default function EditProfileModal({
         throw new Error("Authentication token not found");
       }
 
-      const response : any = await axiosInstance.put("/auth/profile", data, {
+      const response = await axiosInstance.put("/auth/profile", data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update profile");
-      }
-
-      const result = await response.json();
-      updateUser(result.user);
+      updateUser(response.data.user);
       toast.success("Profile updated successfully!");
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Profile update error:", error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to update profile",
+        error.response?.data?.error || "Failed to update profile",
       );
     } finally {
       setIsLoading(false);

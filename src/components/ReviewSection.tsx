@@ -68,7 +68,7 @@ export default function ReviewSection({
         throw new Error("Please login to submit a review");
       }
 
-      const response: any = await axiosInstance.post(
+      await axiosInstance.post(
         "/reviews",
         {
           productId,
@@ -83,20 +83,13 @@ export default function ReviewSection({
         },
       );
 
-      console.log("product response", response);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to submit review");
-      }
-
       setSuccess(true);
       form.reset();
       onReviewAdded();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Review submission error:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to submit review",
+        error.response?.data?.error || "Failed to submit review",
       );
     } finally {
       setIsSubmitting(false);

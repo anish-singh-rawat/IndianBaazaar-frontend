@@ -49,14 +49,11 @@ export default function SearchAutocomplete({
 
       setLoading(true);
       try {
-        const response : any = await axiosInstance.get(
+        const response = await axiosInstance.get(
           `/products/search/suggestions?q=${encodeURIComponent(query)}`,
         );
-        if (response.ok) {
-          const data = await response.json();
-          setSuggestions(data.suggestions || []);
-          setIsOpen(data.suggestions.length > 0);
-        }
+        setSuggestions(response.data.suggestions || []);
+        setIsOpen((response.data.suggestions || []).length > 0);
       } catch (error) {
         console.error("Error fetching suggestions:", error);
         setSuggestions([]);
