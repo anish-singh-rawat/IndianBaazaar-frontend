@@ -8,6 +8,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
+  googleLogin: (token: string) => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;
 }
@@ -99,6 +100,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const googleLogin = async (token: string) => {
+    try {
+      const response = await axiosInstance.post("/auth/google", { token });
+      localStorage.setItem("authToken", response.data.token);
+      setUser(response.data.user);
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      throw new Error(error.response?.data?.error || "Google login failed");
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("authToken");
     setUser(null);
@@ -118,6 +130,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isLoading,
         login,
         register,
+        googleLogin,
         logout,
         updateUser,
       }}

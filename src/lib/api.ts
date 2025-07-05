@@ -250,17 +250,11 @@ export const notificationApi = {
 
 // Auth APIs
 export const authApi = {
-  async login(email: string, password: string)  {
+  async login(email: string, password: string) {
     const response = await axiosInstance.post(`/auth/login`, {
       email,
       password,
     });
-
-    if (response.status !== 200) {
-      const error = response.data;
-      throw new Error(error.error || "Login failed");
-    }
-
     return response.data;
   },
 
@@ -272,12 +266,6 @@ export const authApi = {
     gender?: "male" | "female" | "other";
   }) {
     const response = await axiosInstance.post(`/auth/register`, userData);
-
-    if (response.status !== 200) {
-      const error = response.data;
-      throw new Error(error.error || "Registration failed");
-    }
-
     return response.data;
   },
 
@@ -288,26 +276,11 @@ export const authApi = {
         Authorization: `Bearer ${token}`,
       },
     });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch profile");
-    }
-
     return response.data;
   },
 
-  async googleAuth(googleData: {
-    googleId: string;
-    email: string;
-    name: string;
-  }) {
-    const response = await axiosInstance.post(`/auth/google`, googleData);
-
-    if (response.status !== 200) {
-      const error = response.data;
-      throw new Error(error.error || "Google authentication failed");
-    }
-
+  async googleAuth(token: string) {
+    const response = await axiosInstance.post(`/auth/google`, { token });
     return response.data;
   },
 };
