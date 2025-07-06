@@ -32,6 +32,7 @@ export interface Product {
   offers?: string[];
   coupons?: string[];
   faqs?: {
+    id?: string;
     question: string;
     answer: string;
   }[];
@@ -113,8 +114,22 @@ export interface ShippingAddress {
 export interface CreateOrderRequest {
   amount: number;
   currency: string;
-  items: OrderItem[];
-  shippingAddress: ShippingAddress;
+  items: {
+    productId: string;
+    quantity: number;
+    price: number;
+    selectedSize?: string;
+    selectedColor?: string;
+  }[];
+  shippingAddress: {
+    name: string;
+    street: string;
+    city: string;
+    state: string;
+    pincode: string;
+    country: string;
+    phone: string;
+  };
 }
 
 export interface Review {

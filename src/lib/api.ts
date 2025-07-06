@@ -27,8 +27,9 @@ export const api = {
       }
       const response = await axiosInstance.get(`/products?${searchParams}`);
 
-      // Ensure we always return an array
-      return Array.isArray(response.data.products) ? response.data.products : [];
+      // Ensure we always return an array and transform backend data to frontend format
+      const products = Array.isArray(response.data.products) ? response.data.products : [];
+      return products.map(transformBackendProductToFrontend);
     } catch (error) {
       console.error("Error fetching products:", error);
       return []; // Return empty array on error
@@ -38,7 +39,7 @@ export const api = {
   async getProductById(id: string): Promise<Product | null> {
     try {
       const response = await axiosInstance.get(`/products/${id}`);
-      return response.data.product || null;
+      return response.data.product ? transformBackendProductToFrontend(response.data.product) : null;
     } catch (error: any) {
       if (error.response?.status === 404) {
         return null;
@@ -75,13 +76,77 @@ export const api = {
   async getProductsByCategory(category: string): Promise<Product[]> {
     try {
       const response = await axiosInstance.get(`/products/category/${category}`);
-      return Array.isArray(response.data.products) ? response.data.products : [];
+      const products = Array.isArray(response.data.products) ? response.data.products : [];
+      return products.map(transformBackendProductToFrontend);
     } catch (error) {
       console.error("Error fetching products by category:", error);
       return [];
     }
   },
 };
+
+// Transform backend product data to frontend format
+function transformBackendProductToFrontend(backendProduct: any): Product {
+  return {
+    id: backendProduct.id,
+    name: backendProduct.name,
+    title: backendProduct.name,
+    description: backendProduct.description,
+    specifications: {},
+    category: backendProduct.category,
+    old_price: parseFloat(backendProduct.mrp) || 0,
+    our_price: parseFloat(backendProduct.our_price) || 0,
+    mrp: parseFloat(backendProduct.mrp) || 0,
+    discount_percentage: backendProduct.discount || 0,
+    discount: backendProduct.discount || 0,
+    images: backendProduct.images || [],
+    in_stock: backendProduct.in_stock,
+    average_rating: parseFloat(backendProduct.rating) || 0,
+    rating: parseFloat(backendProduct.rating) || 0,
+    review_count: 0,
+    reviews: [],
+    features: [],
+    tags: [],
+    sizes: backendProduct.size ? [backendProduct.size] : undefined,
+    colors: backendProduct.color ? [backendProduct.color] : undefined,
+    color: backendProduct.color,
+    size: backendProduct.size,
+    weight: backendProduct.weight,
+    height: backendProduct.height,
+    company: backendProduct.company,
+    stockQuantity: backendProduct.stock_quantity,
+    afterExchangePrice: parseFloat(backendProduct.after_exchange_price) || undefined,
+    offers: backendProduct.offers || [],
+    coupons: backendProduct.coupons || [],
+    faqs: backendProduct.faqs || [],
+    verified: false,
+    created_at: backendProduct.createdAt,
+    updated_at: backendProduct.updatedAt,
+  };
+}
+
+// Transform frontend product data to backend format
+function transformFrontendProductToBackend(frontendProduct: Partial<Product>): any {
+  return {
+    name: frontendProduct.name,
+    description: frontendProduct.description,
+    images: frontendProduct.images,
+    mrp: frontendProduct.mrp,
+    our_price: frontendProduct.our_price,
+    discount: frontendProduct.discount,
+    offers: frontendProduct.offers,
+    coupons: frontendProduct.coupons,
+    company: frontendProduct.company,
+    color: frontendProduct.color,
+    size: frontendProduct.size,
+    weight: frontendProduct.weight,
+    height: frontendProduct.height,
+    category: frontendProduct.category,
+    in_stock: frontendProduct.in_stock,
+    stockQuantity: frontendProduct.stockQuantity,
+    faqs: frontendProduct.faqs,
+  };
+}
 
 // Legacy exports for backward compatibility
 export const productApi = {
@@ -194,6 +259,28 @@ export const adminApi = {
     const response = await axiosInstance.get(`/admin/orders`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      },
+    });
+    return response.data;
+  },
+  createProduct: async (productData: Partial<Product>) => {
+    const token = localStorage.getItem("authToken");
+    const backendData = transformFrontendProductToBackend(productData);
+    const response = await axiosInstance.post("/products", backendData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  },
+  updateProduct: async (productId: string, productData: Partial<Product>) => {
+    const token = localStorage.getItem("authToken");
+    const backendData = transformFrontendProductToBackend(productData);
+    const response = await axiosInstance.put(`/products/${productId}`, backendData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     });
     return response.data;

@@ -78,7 +78,7 @@ export default function CheckoutModal({
         throw new Error("Authentication required");
       }
 
-      // Prepare order items
+      // Prepare order items with correct field names for backend
       const orderItems = cart.items
         .map((item) => {
           const product = getProductById(item.productId);
@@ -91,16 +91,24 @@ export default function CheckoutModal({
             selectedColor: item.selectedColor,
           };
         })
-        .filter(Boolean) as CreateOrderRequest["items"];
+        .filter(Boolean) as any[];
 
-      // Create order
+      // Create order with correct payload structure
       const createOrderResponse = await axiosInstance.post(
         "/orders",
         {
           amount: finalTotal,
           currency: "INR",
           items: orderItems,
-          shippingAddress: shippingData,
+          shippingAddress: {
+            name: "Customer", // You might want to get this from user profile
+            street: shippingData.street,
+            city: shippingData.city,
+            state: shippingData.state,
+            pincode: shippingData.pincode,
+            country: shippingData.country,
+            phone: "0000000000", // You might want to get this from user profile
+          },
         },
         {
           headers: {

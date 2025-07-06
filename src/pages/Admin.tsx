@@ -26,6 +26,7 @@ import { Product, Order, User } from "@shared/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/contexts/NotificationContext";
 import axiosInstance from "@/lib/axios";
+import { adminApi } from "@/lib/api";
 
 interface DashboardStats {
   totalProducts: number;
@@ -117,15 +118,9 @@ export default function Admin() {
     productData: Omit<Product, "id" | "reviews">,
   ) => {
     try {
-      const token = localStorage.getItem("authToken");
-      const response = await axiosInstance.post("/products", productData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await adminApi.createProduct(productData);
       
-      setProducts((prev) => [response.data.product, ...prev]);
+      setProducts((prev) => [transformBackendProductToFrontend(response.product), ...prev]);
       if (stats) {
         setStats((prev) =>
           prev ? { ...prev, totalProducts: prev.totalProducts + 1 } : null,
@@ -143,20 +138,10 @@ export default function Admin() {
     productData: Partial<Product>,
   ) => {
     try {
-      const token = localStorage.getItem("authToken");
-      const response = await axiosInstance.put(
-        `/products/${productId}`,
-        productData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        },
-      );
+      const response = await adminApi.updateProduct(productId, productData);
 
       setProducts((prev) =>
-        prev.map((p) => (p.id === productId ? response.data.product : p)),
+        prev.map((p) => (p.id === productId ? transformBackendProductToFrontend(response.product) : p)),
       );
     } catch (error: any) {
       console.error("Error updating product:", error);
@@ -788,4 +773,44 @@ export default function Admin() {
       />
     </Layout>
   );
+}
+
+// Add the transform function
+function transformBackendProductToFrontend(backendProduct: any): Product {
+  return {
+    id: backendProduct.id,
+    name: backendProduct.name,
+    title: backendProduct.name,
+    description: backendProduct.description,
+    specifications: {},
+    category: backendProduct.category,
+    old_price: parseFloat(backendProduct.mrp) || 0,
+    our_price: parseFloat(backendProduct.our_price) || 0,
+    mrp: parseFloat(backendProduct.mrp) || 0,
+    discount_percentage: backendProduct.discount || 0,
+    discount: backendProduct.discount || 0,
+    images: backendProduct.images || [],
+    in_stock: backendProduct.in_stock,
+    average_rating: parseFloat(backendProduct.rating) || 0,
+    rating: parseFloat(backendProduct.rating) || 0,
+    review_count: 0,
+    reviews: [],
+    features: [],
+    tags: [],
+    sizes: backendProduct.size ? [backendProduct.size] : undefined,
+    colors: backendProduct.color ? [backendProduct.color] : undefined,
+    color: backendProduct.color,
+    size: backendProduct.size,
+    weight: backendProduct.weight,
+    height: backendProduct.height,
+    company: backendProduct.company,
+    stockQuantity: backendProduct.stock_quantity,
+    afterExchangePrice: parseFloat(backendProduct.after_exchange_price) || undefined,
+    offers: backendProduct.offers || [],
+    coupons: backendProduct.coupons || [],
+    faqs: backendProduct.faqs || [],
+    verified: false,
+    created_at: backendProduct.createdAt,
+    updated_at: backendProduct.updatedAt,
+  };
 }
