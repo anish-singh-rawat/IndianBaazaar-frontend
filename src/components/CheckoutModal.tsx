@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingBag, MapPin, CreditCard } from "lucide-react";
-import { Cart, Product, CreateOrderRequest } from "@shared/types";
+import { Cart, Product } from "../../shared/types";
 import axiosInstance from "@/lib/axios";
 
 const shippingSchema = z.object({

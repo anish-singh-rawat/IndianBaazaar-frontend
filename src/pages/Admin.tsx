@@ -22,7 +22,7 @@ import Layout from "@/components/Layout";
 import AddProductModal from "@/components/AddProductModal";
 import UpdateProductModal from "@/components/UpdateProductModal";
 import { Button } from "@/components/ui/button";
-import { Product, Order, User } from "@shared/types";
+import { Product, Order, User } from "../../shared/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/contexts/NotificationContext";
 import axiosInstance from "@/lib/axios";

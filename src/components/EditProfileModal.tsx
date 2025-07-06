@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { User } from "@shared/types";
+import { User } from "../../shared/types";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Dialog,

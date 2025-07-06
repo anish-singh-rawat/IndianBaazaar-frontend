@@ -1,4 +1,4 @@
-import { Cart, CartItem, Product } from "@shared/types";
+import { Cart, CartItem, Product } from "../../shared/types";
 
 const CART_STORAGE_KEY = "indianbaazaar-cart";
 

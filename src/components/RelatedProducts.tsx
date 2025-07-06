@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Product } from "@shared/types";
+import { Product } from "../../shared/types";
 import ProductCard from "./ProductCard";
 import { api } from "@/lib/api";
 

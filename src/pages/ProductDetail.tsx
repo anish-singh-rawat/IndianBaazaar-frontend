@@ -16,7 +16,7 @@ import ReviewSection from "@/components/ReviewSection";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { addToCart } from "@/lib/cart";
-import { Product, Cart } from "@shared/types";
+import { Product, Cart } from "../../shared/types";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();

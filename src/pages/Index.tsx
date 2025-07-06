@@ -5,7 +5,7 @@ import HeroSlider from "@/components/HeroSlider";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
-import { Product } from "@shared/types";
+import { Product } from "../../shared/types";
 
 const categories = [
   { id: "all", name: "All Products" },

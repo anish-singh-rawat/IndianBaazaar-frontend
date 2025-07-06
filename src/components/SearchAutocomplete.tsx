@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { SearchSuggestion } from "@shared/types";
+import { SearchSuggestion } from "../../shared/types";
 import axiosInstance from "@/lib/axios";
 
 interface SearchAutocompleteProps {

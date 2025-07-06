@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { User, AuthResponse } from "@shared/types";
+import { User, AuthResponse } from "../../shared/types";
 import axiosInstance from "@/lib/axios";
 
 interface AuthContextType {

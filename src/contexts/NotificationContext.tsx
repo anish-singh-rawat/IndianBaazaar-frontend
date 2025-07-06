@@ -5,7 +5,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { Notification } from "@shared/types";
+import { Notification } from "../../shared/types";
 import { useAuth } from "./AuthContext";
 import axiosInstance from "@/lib/axios";
 

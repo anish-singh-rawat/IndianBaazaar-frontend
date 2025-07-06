@@ -1,9 +1,4 @@
-import { Product } from "@shared/types";
-import {
-  ProductsResponse,
-  ProductResponse,
-  SearchSuggestionsResponse,
-} from "@shared/api";
+import { Product } from ".../../shared/types";
 import axiosInstance from "./axios";
 
 export const api = {
@@ -59,7 +54,7 @@ export const api = {
     }
   },
 
-  async getSearchSuggestions(query: string): Promise<SearchSuggestionsResponse["suggestions"]> {
+  async getSearchSuggestions(query: string): Promise<any["suggestions"]> {
     if (!query || query.trim().length < 2) {
       return [];
     }

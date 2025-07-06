@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Review } from "@shared/types";
+import { Review } from "../../shared/types";
 import axiosInstance from "@/lib/axios";
 
 const reviewSchema = z.object({

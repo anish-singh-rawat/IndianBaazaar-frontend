@@ -12,7 +12,7 @@ import {
   clearCart,
 } from "@/lib/cart";
 import { api } from "@/lib/api";
-import { Cart as CartType, Product } from "@shared/types";
+import { Cart as CartType, Product } from "../../shared/types";
 
 export default function Cart() {
   const [cart, setCart] = useState<CartType>({ items: [], total: 0 });

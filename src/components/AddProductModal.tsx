@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { X, Upload, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Product } from "@shared/types";
+import { Product } from "../../shared/types";
 
 interface AddProductModalProps {
   isOpen: boolean;
