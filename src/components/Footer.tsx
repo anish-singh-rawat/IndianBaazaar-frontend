@@ -19,8 +19,7 @@ export default function Footer() {
           <div className="space-y-4">
             <div className="flex items-center">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2Fc0bb718ca55f4080904ee431798aa3e4%2F6e8d94dda07c4bcc989f4b6943784a3d?format=webp&width=800"
-                alt="IndianBaazaar"
+                src="/assets/IndianBaazaar.png"
                 className="h-8 w-auto"
               />
               <span className="text-lg font-bold text-[#1690C7] ml-2">
