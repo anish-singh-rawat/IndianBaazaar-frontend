@@ -29,14 +29,15 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@shared/*": ["./shared/*"]
+      "@shared/*": ["../shared/*"]
     }
   },
   "include": [
     "src/**/*",
     "vite.config.ts",
     "*.ts",
-    "*.tsx"
+    "*.tsx",
+    "../shared/**/*"
   ],
   "exclude": ["node_modules", "dist"]
 }
