@@ -47,7 +47,7 @@ export default function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <img
-              src="/assets/IndianBaazaar.png"
+              src="https://www.indianbaazaar.com/IndianBaazaar.png"
               className="h-10 w-auto"
             />
             <span className="text-xl font-bold text-[#000] ml-2 hide-span:hidden">
@@ -213,7 +213,7 @@ export default function Header() {
             <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center">
                 <img
-                src="/assets/IndianBaazaar.png"
+                src="https://www.indianbaazaar.com/IndianBaazaar.png"
                   className="h-8 w-auto"
                 />
               </div>
