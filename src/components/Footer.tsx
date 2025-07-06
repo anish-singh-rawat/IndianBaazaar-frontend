@@ -33,16 +33,33 @@ export default function Footer() {
               in one place.
             </p>
             <div className="flex space-x-4">
-              <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">f</span>
-              </div>
-              <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">t</span>
-              </div>
-              <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">i</span>
-              </div>
+              <a href="https://www.facebook.com/profile.php?id=61573164884362" target="_blank" rel="noopener noreferrer">
+                <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">f</span>
+                </div>
+              </a>
+              <a href="https://x.com/indianbaazaar" target="_blank" rel="noopener noreferrer">
+                <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">x</span>
+                </div>
+              </a>
+              <a href="https://t.me/IndianBaazaars" target="_blank" rel="noopener noreferrer">
+                <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">t</span>
+                </div>
+              </a>
+              <a href="https://www.instagram.com/indianbaazaar/" target="_blank" rel="noopener noreferrer">
+                <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">i</span>
+                </div>
+              </a>
+              <a href="https://whatsapp.com/channel/0029Vb7npVK9RZAY5BOvrL1z" target="_blank" rel="noopener noreferrer">
+                <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">w</span>
+                </div>
+              </a>
             </div>
+
           </div>
 
           {/* Quick Links */}
