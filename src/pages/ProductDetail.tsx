@@ -49,26 +49,29 @@ export default function ProductDetail() {
         // Get related products from same category
         if (foundProduct) {
           const allProducts = await api.getProducts();
-          const related = allProducts
-            .filter(
-              (p) =>
-                p.id !== foundProduct.id &&
-                p.category === foundProduct.category,
-            )
-            .slice(0, 4);
-
-          // If not enough from same category, add from other categories
-          if (related?.length < 4) {
-            const additional = allProducts
+          // Ensure allProducts is an array
+          if (Array.isArray(allProducts)) {
+            const related = allProducts
               .filter(
                 (p) =>
                   p.id !== foundProduct.id &&
-                  !related.some((r) => r.id === p.id),
+                  p.category === foundProduct.category,
               )
-              .slice(0, 4 - related?.length);
-            setRelatedProducts([...related, ...additional]);
-          } else {
-            setRelatedProducts(related);
+              .slice(0, 4);
+
+            // If not enough from same category, add from other categories
+            if (related?.length < 4) {
+              const additional = allProducts
+                .filter(
+                  (p) =>
+                    p.id !== foundProduct.id &&
+                    !related.some((r) => r.id === p.id),
+                )
+                .slice(0, 4 - related?.length);
+              setRelatedProducts([...related, ...additional]);
+            } else {
+              setRelatedProducts(related);
+            }
           }
         }
       } catch (err) {

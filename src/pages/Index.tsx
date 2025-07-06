@@ -33,10 +33,12 @@ export default function Index() {
         setLoading(true);
         setError(null);
         const fetchedProducts = await api.getProducts();
-        setProducts(fetchedProducts);
+        // Ensure we always have an array
+        setProducts(Array.isArray(fetchedProducts) ? fetchedProducts : []);
       } catch (err) {
         console.error("Error fetching products:", err);
         setError("Failed to load products. Please try again later.");
+        setProducts([]); // Set empty array on error
       } finally {
         setLoading(false);
       }
@@ -47,7 +49,13 @@ export default function Index() {
 
   // Filter and sort products when dependencies change
   useEffect(() => {
-    let filtered = products;
+    // Ensure products is always an array before filtering
+    if (!Array.isArray(products)) {
+      setFilteredProducts([]);
+      return;
+    }
+
+    let filtered = [...products];
 
     // Filter by category
     if (selectedCategory !== "all") {
@@ -69,10 +77,10 @@ export default function Index() {
         );
         break;
       case "rating":
-        filtered = [...filtered].sort((a, b) => b.rating - a.rating);
+        filtered = [...filtered].sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case "discount":
-        filtered = [...filtered].sort((a, b) => b.discount - a.discount);
+        filtered = [...filtered].sort((a, b) => (b.discount || 0) - (a.discount || 0));
         break;
       default:
         // Keep original order for featured

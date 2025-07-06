@@ -13,25 +13,32 @@ export const api = {
     search?: string;
     in_stock?: boolean;
   }): Promise<Product[]> {
-    const searchParams = new URLSearchParams();
+    try {
+      const searchParams = new URLSearchParams();
 
-    if (params?.category && params.category !== "all") {
-      searchParams.append("category", params.category);
+      if (params?.category && params.category !== "all") {
+        searchParams.append("category", params.category);
+      }
+      if (params?.search) {
+        searchParams.append("search", params.search);
+      }
+      if (params?.in_stock) {
+        searchParams.append("in_stock", "true");
+      }
+      const response = await axiosInstance.get(`/products?${searchParams}`);
+
+      // Ensure we always return an array
+      return Array.isArray(response.data.products) ? response.data.products : [];
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      return []; // Return empty array on error
     }
-    if (params?.search) {
-      searchParams.append("search", params.search);
-    }
-    if (params?.in_stock) {
-      searchParams.append("in_stock", "true");
-    }
-    const response = await axiosInstance.get(`/products?${searchParams}`);
-    return response.data.products;
   },
 
   async getProductById(id: string): Promise<Product | null> {
     try {
       const response = await axiosInstance.get(`/products/${id}`);
-      return response.data.product;
+      return response.data.product || null;
     } catch (error: any) {
       if (error.response?.status === 404) {
         return null;
@@ -42,8 +49,13 @@ export const api = {
   },
 
   async getProductsReviews(productId: string): Promise<any> {
-    const response = await axiosInstance.get(`/products/${productId}/reviews`);
-    return response.data;
+    try {
+      const response = await axiosInstance.get(`/products/${productId}/reviews`);
+      return response.data || { reviews: [] };
+    } catch (error) {
+      console.error("Error fetching product reviews:", error);
+      return { reviews: [] };
+    }
   },
 
   async getSearchSuggestions(query: string): Promise<SearchSuggestionsResponse["suggestions"]> {
@@ -63,7 +75,7 @@ export const api = {
   async getProductsByCategory(category: string): Promise<Product[]> {
     try {
       const response = await axiosInstance.get(`/products/category/${category}`);
-      return response.data.products;
+      return Array.isArray(response.data.products) ? response.data.products : [];
     } catch (error) {
       console.error("Error fetching products by category:", error);
       return [];
