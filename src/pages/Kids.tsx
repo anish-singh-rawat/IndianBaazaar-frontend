@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Baby, Gamepad, Shirt, GraduationCap } from "lucide-react";
+import { Baby, Gamepad2, Shirt, GraduationCap } from "lucide-react";
 
 export default function Kids() {
   const categories = [
@@ -12,7 +12,7 @@ export default function Kids() {
         "https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=300&h=200&fit=crop",
     },
     {
-      icon: Gamepad,
+      icon: Gamepad2,
       title: "Toys & Games",
       description: "Fun toys and educational games",
       image:
