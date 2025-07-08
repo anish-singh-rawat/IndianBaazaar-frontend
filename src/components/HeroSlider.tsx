@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -15,48 +16,53 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    image: "https://i.pinimg.com/564x/c5/4c/8c/c54c8c9833a4e95cfe7a59e4ba70a5d6.jpg",
+    image:
+      "https://i.pinimg.com/564x/c5/4c/8c/c54c8c9833a4e95cfe7a59e4ba70a5d6.jpg",
     title: "Welcome to IndianBaazaar",
     subtitle: "Your one-stop destination for everything you need",
     ctaText: "Shop Now",
-    ctaLink: "#",
+    ctaLink: "/",
     backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
   },
   {
     id: 2,
-    image: "https://static.vecteezy.com/system/resources/thumbnails/052/923/889/small_2x/happy-diwali-2025-greeting-card-with-stylish-oil-lamp-and-festive-elements-for-diwali-sale-and-special-offers-free-video.jpg",
+    image:
+      "https://static.vecteezy.com/system/resources/thumbnails/052/923/889/small_2x/happy-diwali-2025-greeting-card-with-stylish-oil-lamp-and-festive-elements-for-diwali-sale-and-special-offers-free-video.jpg",
     title: "Electronics & Gadgets",
     subtitle: "Latest smartphones, laptops & accessories at best prices",
     ctaText: "Explore Electronics",
-    ctaLink: "#",
-   backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
+    ctaLink: "/electronics",
+    backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
   },
   {
     id: 3,
-    image: "https://static.vecteezy.com/system/resources/previews/050/551/284/non_2x/happy-new-year-sale-2025-design-with-3d-glowing-light-bulb-billboard-typography-lettering-on-brick-wall-background-holiday-special-offer-campaign-discount-illustration-for-coupon-voucher-banner-vector.jpg",
+    image:
+      "https://static.vecteezy.com/system/resources/previews/050/551/284/non_2x/happy-new-year-sale-2025-design-with-3d-glowing-light-bulb-billboard-typography-lettering-on-brick-wall-background-holiday-special-offer-campaign-discount-illustration-for-coupon-voucher-banner-vector.jpg",
     title: "Fashion & Beauty",
     subtitle: "Trendy clothes and premium beauty products for everyone",
     ctaText: "Shop Fashion",
-    ctaLink: "#",
-   backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
+    ctaLink: "/fashion",
+    backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
   },
   {
     id: 4,
-    image: "https://t3.ftcdn.net/jpg/04/07/20/56/360_F_407205662_bssMmaxOjmIWYoKosf2flLRmsVl1ZOM1.jpg",
+    image:
+      "https://t3.ftcdn.net/jpg/04/07/20/56/360_F_407205662_bssMmaxOjmIWYoKosf2flLRmsVl1ZOM1.jpg",
     title: "Books & Groceries",
     subtitle: "Fresh groceries delivered daily & bestselling books",
     ctaText: "Order Now",
-    ctaLink: "#",
-   backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
+    ctaLink: "/order-now",
+    backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
   },
   {
     id: 5,
-    image: "https://www.shutterstock.com/image-illustration/holi-festival-retail-shopping-banner-260nw-2128498583.jpg",
+    image:
+      "https://www.shutterstock.com/image-illustration/holi-festival-retail-shopping-banner-260nw-2128498583.jpg",
     title: "Special Offers",
     subtitle: "Up to 70% off on selected items - Limited time deals",
     ctaText: "Grab Deals",
-    ctaLink: "#",
-   backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
+    ctaLink: "/",
+    backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
   },
 ];
 
@@ -129,19 +135,23 @@ export default function HeroSlider() {
                       {slide.subtitle}
                     </p>
                     <div className="flex flex-wrap gap-4">
-                      <Button
-                        size="lg"
-                        className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-8 py-3 text-lg"
-                      >
-                        {slide.ctaText}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        className="border-white  text-gray-900 font-semibold px-8 py-3 text-lg"
-                      >
-                        Learn More
-                      </Button>
+                      <Link to={slide.ctaLink}>
+                        <Button
+                          size="lg"
+                          className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-8 py-3 text-lg"
+                        >
+                          {slide.ctaText}
+                        </Button>
+                      </Link>
+                      <Link to="/learn-more">
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className="border-white text-gray-900 font-semibold px-8 py-3 text-lg"
+                        >
+                          Learn More
+                        </Button>
+                      </Link>
                     </div>
 
                     {/* Features */}
