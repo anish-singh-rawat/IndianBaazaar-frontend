@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Shirt, Dress, ShoppingBag, Crown, Gem, Watch } from "lucide-react";
+import { Shirt, User, ShoppingBag, Crown, Gem, Watch } from "lucide-react";
 
 export default function Fashion() {
   const categories = [
@@ -12,7 +12,7 @@ export default function Fashion() {
         "https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=300&h=200&fit=crop",
     },
     {
-      icon: Dress,
+      icon: User,
       title: "Women's Fashion",
       description: "Elegant dresses and stylish outfits for women",
       image:
