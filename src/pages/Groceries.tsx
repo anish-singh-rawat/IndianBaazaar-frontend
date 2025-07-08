@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Apple, Fish, Coffee, Milk } from "lucide-react";
+import { Apple, Fish, Coffee, Droplets } from "lucide-react";
 
 export default function Groceries() {
   const categories = [
@@ -12,7 +12,7 @@ export default function Groceries() {
         "https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&h=200&fit=crop",
     },
     {
-      icon: Milk,
+      icon: Droplets,
       title: "Dairy Products",
       description: "Milk, cheese, yogurt, and more",
       image:
