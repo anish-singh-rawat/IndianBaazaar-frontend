@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { ChefHat, UtensilsCrossed, Microwave, Coffee } from "lucide-react";
+import { ChefHat, Utensils, Microwave, Coffee } from "lucide-react";
 
 export default function Kitchen() {
   const categories = [
@@ -12,7 +12,7 @@ export default function Kitchen() {
         "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=200&fit=crop",
     },
     {
-      icon: UtensilsCrossed,
+      icon: Utensils,
       title: "Kitchen Tools",
       description: "Knives, cutting boards, and utensils",
       image:
