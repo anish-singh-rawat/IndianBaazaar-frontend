@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Apple, Beef, Coffee, Milk } from "lucide-react";
+import { Apple, Fish, Coffee, Milk } from "lucide-react";
 
 export default function Groceries() {
   const categories = [
@@ -19,7 +19,7 @@ export default function Groceries() {
         "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&h=200&fit=crop",
     },
     {
-      icon: Beef,
+      icon: Fish,
       title: "Meat & Seafood",
       description: "Fresh meat and seafood selections",
       image:
