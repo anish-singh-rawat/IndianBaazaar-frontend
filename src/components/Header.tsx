@@ -259,6 +259,14 @@ export default function Header() {
                   </Link>
 
                   <Link
+                    to="/about-us"
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span className="text-gray-700">About Us</span>
+                  </Link>
+
+                  <Link
                     to="/notifications"
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors relative"
                     onClick={() => setIsMobileMenuOpen(false)}
