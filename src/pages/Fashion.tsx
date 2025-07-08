@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Shirt, User, ShoppingBag, Crown, Gem, Watch } from "lucide-react";
+import { Shirt, User, ShoppingBag, Diamond, Gem, Watch } from "lucide-react";
 
 export default function Fashion() {
   const categories = [
@@ -26,7 +26,7 @@ export default function Fashion() {
         "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=200&fit=crop",
     },
     {
-      icon: Crown,
+      icon: Diamond,
       title: "Jewelry",
       description: "Beautiful jewelry for every occasion",
       image:
