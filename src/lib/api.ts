@@ -59,10 +59,28 @@ export const api = {
 
   async getProductsReviews(productId: string): Promise<any> {
     try {
-      const response = await axiosInstance.get(
-        `/products/${productId}/reviews`,
-      );
-      return response.data || { reviews: [] };
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Return mock reviews for demo
+      return {
+        reviews: [
+          {
+            id: "1",
+            rating: 5,
+            comment: "Excellent product, highly recommended!",
+            user: { name: "John Doe" },
+            created_at: "2024-01-15T10:00:00Z",
+          },
+          {
+            id: "2",
+            rating: 4,
+            comment: "Good quality, fast delivery.",
+            user: { name: "Jane Smith" },
+            created_at: "2024-01-10T10:00:00Z",
+          },
+        ],
+      };
     } catch (error) {
       console.error("Error fetching product reviews:", error);
       return { reviews: [] };
