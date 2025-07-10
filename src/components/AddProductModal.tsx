@@ -76,7 +76,7 @@ export default function AddProductModal({
     setFormData({
       name: "",
       description: "",
-      images: ["", "", "", "", ""],
+      images: [],
       mrp: "",
       our_price: "",
       discount: "",
@@ -94,6 +94,8 @@ export default function AddProductModal({
       stockQuantity: "",
       faqs: [{ question: "", answer: "" }],
     });
+    setUploadingImages([]);
+    setUploadErrors([]);
   };
 
   const addImageField = () => {
