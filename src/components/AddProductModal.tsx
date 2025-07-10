@@ -98,25 +98,85 @@ export default function AddProductModal({
     setUploadErrors([]);
   };
 
-  const addImageField = () => {
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ""],
-    }));
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/file/upload-image",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      return response.data.imageUrl;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw new Error("Failed to upload image");
+    }
   };
 
-  const removeImageField = (index: number) => {
+  const handleFileUpload = async (files: FileList | null, index?: number) => {
+    if (!files || files.length === 0) return;
+
+    const newUploadingState = [...uploadingImages];
+    const newErrorsState = [...uploadErrors];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const uploadIndex = index !== undefined ? index : formData.images.length;
+
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        newErrorsState[uploadIndex] = "Please select an image file";
+        continue;
+      }
+
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        newErrorsState[uploadIndex] = "Image size must be less than 5MB";
+        continue;
+      }
+
+      newUploadingState[uploadIndex] = true;
+      newErrorsState[uploadIndex] = "";
+      setUploadingImages(newUploadingState);
+      setUploadErrors(newErrorsState);
+
+      try {
+        const imageUrl = await uploadImage(file);
+
+        setFormData((prev) => {
+          const newImages = [...prev.images];
+          if (index !== undefined) {
+            newImages[index] = imageUrl;
+          } else {
+            newImages.push(imageUrl);
+          }
+          return { ...prev, images: newImages };
+        });
+
+        newUploadingState[uploadIndex] = false;
+        setUploadingImages([...newUploadingState]);
+      } catch (error) {
+        newUploadingState[uploadIndex] = false;
+        newErrorsState[uploadIndex] = "Failed to upload image";
+        setUploadingImages([...newUploadingState]);
+        setUploadErrors([...newErrorsState]);
+      }
+    }
+  };
+
+  const removeImage = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       images: prev.images.filter((_, i) => i !== index),
     }));
-  };
-
-  const updateImage = (index: number, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      images: prev.images.map((img, i) => (i === index ? value : img)),
-    }));
+    setUploadingImages((prev) => prev.filter((_, i) => i !== index));
+    setUploadErrors((prev) => prev.filter((_, i) => i !== index));
   };
 
   const addOfferField = () => {
