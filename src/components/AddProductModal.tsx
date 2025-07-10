@@ -355,41 +355,124 @@ export default function AddProductModal({
               <h3 className="text-lg font-semibold text-gray-900">
                 Product Images
               </h3>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={addImageField}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Image
-              </Button>
+              <label className="cursor-pointer">
+                <Button type="button" variant="outline" size="sm" asChild>
+                  <span>
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Images
+                  </span>
+                </Button>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e.target.files)}
+                  className="hidden"
+                />
+              </label>
             </div>
 
-            <div className="space-y-3">
-              {formData.images.map((image, index) => (
-                <div key={index} className="flex gap-2">
-                  <input
-                    type="url"
-                    placeholder={`Image URL ${index + 1} ${index < 5 ? "(Required for first 5)" : "(Optional)"}`}
-                    value={image}
-                    onChange={(e) => updateImage(index, e.target.value)}
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                    required={index < 5}
-                  />
-                  {formData.images.length > 5 && (
+            {/* Uploaded Images Preview */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {formData.images.map((imageUrl, index) => (
+                <div key={index} className="relative group">
+                  <div className="aspect-square border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-gray-50">
+                    {uploadingImages[index] ? (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                      </div>
+                    ) : (
+                      <img
+                        src={imageUrl}
+                        alt={`Product image ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+
+                  {/* Remove button */}
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => removeImage(index)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+
+                  {/* Error message */}
+                  {uploadErrors[index] && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {uploadErrors[index]}
+                    </p>
+                  )}
+
+                  {/* Replace button */}
+                  <label className="absolute bottom-2 left-2 cursor-pointer">
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
-                      onClick={() => removeImageField(index)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity h-6 text-xs"
+                      asChild
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <span>Replace</span>
                     </Button>
-                  )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e.target.files, index)}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
               ))}
+
+              {/* Add more images placeholder */}
+              {formData.images.length < 10 && (
+                <label className="cursor-pointer">
+                  <div className="aspect-square border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <ImageIcon className="h-8 w-8 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-600">Add Image</span>
+                    <span className="text-xs text-gray-400">Max 5MB</span>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e.target.files)}
+                    className="hidden"
+                  />
+                </label>
+              )}
             </div>
+
+            {formData.images.length === 0 && (
+              <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                <h4 className="text-lg font-medium text-gray-600 mb-2">
+                  No Images Uploaded
+                </h4>
+                <p className="text-gray-500 mb-4">
+                  Upload at least one product image to continue
+                </p>
+                <label className="cursor-pointer">
+                  <Button type="button" variant="outline" asChild>
+                    <span>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Choose Files
+                    </span>
+                  </Button>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => handleFileUpload(e.target.files)}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            )}
           </div>
 
           {/* Pricing */}
