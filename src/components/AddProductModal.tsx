@@ -46,7 +46,7 @@ export default function AddProductModal({
     const productData = {
       name: formData.name,
       description: formData.description,
-      images: formData.images.filter((img) => img.trim() !== ""),
+      images: formData.images.filter((img) => img && img.trim() !== ""),
       mrp: parseFloat(formData.mrp) || 0,
       our_price: parseFloat(formData.our_price) || 0,
       discount: parseFloat(formData.discount) || 0,
