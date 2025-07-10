@@ -18,7 +18,7 @@ export default function AddProductModal({
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    images: ["", "", "", "", ""],
+    images: [] as string[],
     mrp: "",
     our_price: "",
     discount: "",
@@ -36,6 +36,8 @@ export default function AddProductModal({
     stockQuantity: "",
     faqs: [{ question: "", answer: "" }],
   });
+  const [uploadingImages, setUploadingImages] = useState<boolean[]>([]);
+  const [uploadErrors, setUploadErrors] = useState<string[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
