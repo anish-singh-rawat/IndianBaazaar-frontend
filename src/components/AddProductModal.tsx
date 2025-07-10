@@ -42,6 +42,12 @@ export default function AddProductModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate that at least one image is uploaded
+    if (formData.images.length === 0) {
+      alert("Please upload at least one product image");
+      return;
+    }
+
     // Transform to match backend API expectations
     const productData = {
       name: formData.name,
