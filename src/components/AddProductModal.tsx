@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { X, Upload, Plus, Trash2 } from "lucide-react";
+import { X, Upload, Plus, Trash2, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "../../shared/types";
+import axios from "axios";
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -32,7 +33,7 @@ export default function AddProductModal({
     height: "",
     category: "clothes" as Product["category"],
     in_stock: true,
-    stockQuantity : "",
+    stockQuantity: "",
     faqs: [{ question: "", answer: "" }],
   });
 
@@ -88,7 +89,7 @@ export default function AddProductModal({
       height: "",
       category: "clothes",
       in_stock: true,
-      stockQuantity : "",
+      stockQuantity: "",
       faqs: [{ question: "", answer: "" }],
     });
   };
@@ -463,7 +464,10 @@ export default function AddProductModal({
                   min="0"
                   value={formData.stockQuantity}
                   onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, stockQuantity: e.target.value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      stockQuantity: e.target.value,
+                    }))
                   }
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
