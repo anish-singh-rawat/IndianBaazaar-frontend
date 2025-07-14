@@ -178,7 +178,7 @@ export default function Kids() {
 
               <div>
                 <img
-                  src="https://images.unsplash.com/photo-1560566829-266012e84797?w=600&h=400&fit=crop"
+                  src="https://thumbs.dreamstime.com/b/five-happy-kids-13566435.jpg"
                   alt="Happy Kids"
                   className="rounded-lg shadow-lg w-full"
                 />

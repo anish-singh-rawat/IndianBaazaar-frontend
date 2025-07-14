@@ -16,14 +16,14 @@ export default function Kitchen() {
       title: "Kitchen Tools",
       description: "Knives, cutting boards, and utensils",
       image:
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop",
+        "https://d3gq2merok8n5r.cloudfront.net/abhinav/ond-1634120396-Obfdc/jfm-2023-1672723560-eFGVH/kitchen-1672749519-TNomr/d-inki-jfm2023-912-1673094194-EKSyF/1-1673094205-xvsIn.jpg",
     },
     {
       icon: Microwave,
       title: "Appliances",
       description: "Kitchen appliances and gadgets",
       image:
-        "https://images.unsplash.com/photo-1556909114-7f36b48fdf9e?w=300&h=200&fit=crop",
+        "https://5.imimg.com/data5/SELLER/Default/2023/11/361673904/PV/XC/OF/51323449/designer-modular-kitchen.jpg",
     },
     {
       icon: Coffee,

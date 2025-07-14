@@ -10,9 +10,7 @@ export const api = {
   }): Promise<Product[]> {
     try {
       // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 100));
       const searchParams = new URLSearchParams();
-      searchParams.append("category", params.category);
 
       // Filter by category
       if (params?.category && params.category !== "all") {
@@ -35,7 +33,7 @@ export const api = {
       return products.map(transformBackendProductToFrontend);
     } catch (error) {
       console.error("Error fetching products:", error);
-      return []; // Return empty array on error
+      return []; 
     }
   },
 
