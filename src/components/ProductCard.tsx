@@ -61,40 +61,32 @@ export default function ProductCard({ product, onCartUpdate }: any) {
         </button>
       </div>
 
-      <div className="p-4 flex flex-col justify-between flex-1">
-        <div>
-          <div className="mb-2">
-            <h3 className="font-medium text-gray-900 line-clamp-2 group-hover:text-[#1690C7] transition-colors">
-              {product.name}
-            </h3>
-            <p className="text-sm text-gray-500 mt-1">{product.company}</p>
+      <div className="p-4 flex flex-col justify-between flex-1 h-full">
+        <div className="flex flex-col flex-1 justify-between">
+          <h3 className="font-medium text-gray-900 line-clamp-2 group-hover:text-[#1690C7] transition-colors">
+            {product.name}
+          </h3>
+          <p className="text-sm text-gray-500 mt-1">{product.company}</p>
+          <div className="flex items-center">
+            <Star className="h-4 w-4 text-yellow-400 fill-current" />
+            <span className="text-sm text-gray-600 ml-1">{product.rating}</span>
           </div>
-
-          <div className="flex items-center mb-2">
-            <div className="flex items-center">
-              <Star className="h-4 w-4 text-yellow-400 fill-current" />
-              <span className="text-sm text-gray-600 ml-1">{product.rating}</span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
-              <span className="text-lg font-bold text-gray-900">
-                ₹{(product.our_price || 0)?.toLocaleString()}
+          <div className="flex items-center space-x-2 mt-2">
+            <span className="text-lg font-bold text-gray-900">
+              ₹{(product.our_price || 0)?.toLocaleString()}
+            </span>
+            {(product.mrp || 0) > (product.our_price || 0) && (
+              <span className="text-sm text-gray-500 line-through">
+                ₹{(product.mrp || 0)?.toLocaleString()}
               </span>
-              {(product.mrp || 0) > (product.our_price || 0) && (
-                <span className="text-sm text-gray-500 line-through">
-                  ₹{(product.mrp || 0)?.toLocaleString()}
-                </span>
-              )}
-            </div>
+            )}
           </div>
         </div>
 
         <Button
           onClick={handleAddToCart}
           disabled={!product.in_stock || isAddingToCart}
-          className="w-full bg-[#1690C7] mt-2"
+          className="w-full bg-[#1690C7] mt-4"
           size="sm"
         >
           {isAddingToCart
@@ -107,3 +99,4 @@ export default function ProductCard({ product, onCartUpdate }: any) {
     </Link>
   );
 }
+           
