@@ -2,7 +2,7 @@ import { useState } from "react";
 import { X, Upload, Plus, Trash2, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "../../shared/types";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -106,11 +106,11 @@ export default function AddProductModal({
 
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("image", file);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/file/upload-image",
+      const response = await axiosInstance.post(
+        "/file/upload-image",
         formData,
         {
           headers: {

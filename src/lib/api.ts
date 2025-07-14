@@ -1,5 +1,5 @@
 import { Product } from ".../../shared/types";
-import { mockProducts } from "./mockData";
+import axiosInstance from "./axios";
 
 export const api = {
   // Product APIs
@@ -11,33 +11,28 @@ export const api = {
     try {
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 100));
-
-      let products = [...mockProducts];
+      const searchParams = new URLSearchParams();
+      searchParams.append("category", params.category);
 
       // Filter by category
       if (params?.category && params.category !== "all") {
-        products = products.filter(
-          (product) => product.category === params.category,
-        );
+       searchParams.append("category", params.category);
       }
 
       // Filter by search term
       if (params?.search) {
-        const searchTerm = params.search.toLowerCase();
-        products = products.filter(
-          (product) =>
-            product.name.toLowerCase().includes(searchTerm) ||
-            product.description.toLowerCase().includes(searchTerm) ||
-            product.category.toLowerCase().includes(searchTerm),
-        );
+        searchParams.append("search", params.search);
       }
 
       // Filter by stock
       if (params?.in_stock) {
-        products = products.filter((product) => product.in_stock);
+       searchParams.append("in_stock", "true");
       }
 
-      return products;
+      const response = await axiosInstance.get(`/products?${searchParams}`);
+
+      const products = Array.isArray(response.data.products) ? response.data.products : [];
+      return products.map(transformBackendProductToFrontend);
     } catch (error) {
       console.error("Error fetching products:", error);
       return []; // Return empty array on error
@@ -47,11 +42,12 @@ export const api = {
   async getProductById(id: string): Promise<Product | null> {
     try {
       // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const product = mockProducts.find((p) => p.id === id);
-      return product || null;
+      const response = await axiosInstance.get(`/products/${id}`);
+      return response.data.product ? transformBackendProductToFrontend(response.data.product) : null;
     } catch (error: any) {
+         if (error.response?.status === 404) {
+        return null;
+      }
       console.error("Error fetching product:", error);
       return null;
     }
@@ -60,27 +56,8 @@ export const api = {
   async getProductsReviews(productId: string): Promise<any> {
     try {
       // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Return mock reviews for demo
-      return {
-        reviews: [
-          {
-            id: "1",
-            rating: 5,
-            comment: "Excellent product, highly recommended!",
-            user: { name: "John Doe" },
-            created_at: "2024-01-15T10:00:00Z",
-          },
-          {
-            id: "2",
-            rating: 4,
-            comment: "Good quality, fast delivery.",
-            user: { name: "Jane Smith" },
-            created_at: "2024-01-10T10:00:00Z",
-          },
-        ],
-      };
+     const response = await axiosInstance.get(`/products/${productId}/reviews`);
+      return response.data || { reviews: [] };
     } catch (error) {
       console.error("Error fetching product reviews:", error);
       return { reviews: [] };
@@ -94,24 +71,9 @@ export const api = {
 
     try {
       // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 50));
+       const response = await axiosInstance.get(`/products/search/suggestions?q=${encodeURIComponent(query)}`);
+      return response.data.suggestions;
 
-      const searchTerm = query.toLowerCase();
-      const suggestions = mockProducts
-        .filter(
-          (product) =>
-            product.name.toLowerCase().includes(searchTerm) ||
-            product.description.toLowerCase().includes(searchTerm),
-        )
-        .slice(0, 5)
-        .map((product) => ({
-          id: product.id,
-          name: product.name,
-          category: product.category,
-          image: product.images[0],
-        }));
-
-      return suggestions;
     } catch (error) {
       console.error("Error fetching search suggestions:", error);
       return [];
@@ -121,13 +83,9 @@ export const api = {
   async getProductsByCategory(category: string): Promise<Product[]> {
     try {
       // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      if (category === "all") {
-        return mockProducts;
-      }
-
-      return mockProducts.filter((product) => product.category === category);
+      const response = await axiosInstance.get(`/products/category/${category}`);
+      const products = Array.isArray(response.data.products) ? response.data.products : [];
+      return products.map(transformBackendProductToFrontend);
     } catch (error) {
       console.error("Error fetching products by category:", error);
       return [];
@@ -165,8 +123,7 @@ function transformBackendProductToFrontend(backendProduct: any): Product {
     height: backendProduct.height,
     company: backendProduct.company,
     stockQuantity: backendProduct.stock_quantity,
-    afterExchangePrice:
-      parseFloat(backendProduct.after_exchange_price) || undefined,
+    afterExchangePrice: parseFloat(backendProduct.after_exchange_price) || undefined,
     offers: backendProduct.offers || [],
     coupons: backendProduct.coupons || [],
     faqs: backendProduct.faqs || [],
