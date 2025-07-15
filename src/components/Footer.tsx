@@ -129,7 +129,7 @@ export default function Footer() {
           </div>
 
           {/* Categories */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">Categories</h3>
             <ul className="space-y-2">
               <li>
@@ -181,7 +181,7 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Support */}
           <div className="space-y-4">
