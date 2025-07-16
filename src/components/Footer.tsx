@@ -253,7 +253,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-800 bg-gray-950">
+      {/* <div className="border-t border-gray-800 bg-gray-950">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <p className="text-gray-400 text-sm">
@@ -281,7 +281,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </footer>
   );
 }
