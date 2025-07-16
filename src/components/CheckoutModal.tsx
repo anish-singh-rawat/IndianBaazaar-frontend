@@ -78,7 +78,6 @@ export default function CheckoutModal({
         throw new Error("Authentication required");
       }
 
-      // Prepare order items with correct field names for backend
       const orderItems = cart.items
         .map((item) => {
           const product = getProductById(item.productId);
@@ -119,10 +118,8 @@ export default function CheckoutModal({
       );
 
       const { orderId, razorpayOrder } = createOrderResponse.data;
-
-      // Initialize Razorpay
       const options = {
-        key: process.env.RAZORPAY_KEY_ID || "rzp_test_key",
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         name: "Your Store",
@@ -130,7 +127,6 @@ export default function CheckoutModal({
         order_id: razorpayOrder.id,
         handler: async function (response: any) {
           try {
-            // Verify payment
             await axiosInstance.post(
               "/payments/verify",
               {
@@ -168,19 +164,18 @@ export default function CheckoutModal({
         },
       };
 
-      // Check if Razorpay is loaded
       if (typeof window !== "undefined" && (window as any).Razorpay) {
         const rzp = new (window as any).Razorpay(options);
         rzp.open();
       } else {
         throw new Error(
-          "Payment gateway not loaded. Please refresh and try again.",
+          "Payment gateway not loaded. Please refresh and try again."
         );
       }
     } catch (error: any) {
       console.error("Checkout error:", error);
       setError(
-        error.response?.data?.error || "An error occurred during checkout",
+        error.response?.data?.error || "An error occurred during checkout"
       );
     } finally {
       setIsProcessing(false);
@@ -189,9 +184,7 @@ export default function CheckoutModal({
 
   return (
     <>
-      {/* Razorpay Script */}
-      <script src="https://checkout.razorpay.com/v1/checkout.js" async />
-
+      {/* Razorpay script is now loaded dynamically */}
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
