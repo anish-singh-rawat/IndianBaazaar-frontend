@@ -18,15 +18,6 @@ import Notifications from "./pages/Notifications";
 import CustomerCare from "./pages/CustomerCare";
 import ApiTest from "./pages/ApiTest";
 import NotFound from "./pages/NotFound";
-import LearnMore from "./pages/LearnMore";
-import AboutUs from "./pages/AboutUs";
-import Electronics from "./pages/Electronics";
-import Fashion from "./pages/Fashion";
-import OrderNow from "./pages/OrderNow";
-import Books from "./pages/Books";
-import Groceries from "./pages/Groceries";
-import Kitchen from "./pages/Kitchen";
-import Kids from "./pages/Kids";
 
 const queryClient = new QueryClient();
 
@@ -68,15 +59,6 @@ const App = () => (
               />
               <Route path="/customer-care" element={<CustomerCare />} />
               <Route path="/api-test" element={<ApiTest />} />
-              <Route path="/learn-more" element={<LearnMore />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/electronics" element={<Electronics />} />
-              <Route path="/fashion" element={<Fashion />} />
-              <Route path="/order-now" element={<OrderNow />} />
-              <Route path="/books" element={<Books />} />
-              <Route path="/groceries" element={<Groceries />} />
-              <Route path="/kitchen" element={<Kitchen />} />
-              <Route path="/kids" element={<Kids />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -32,7 +32,7 @@ export default function ProductCard({ product, onCartUpdate }: any) {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="group bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-200 h-full flex flex-col"
+      className="group bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-200"
     >
       <div className="relative overflow-hidden">
         <img
@@ -61,17 +61,23 @@ export default function ProductCard({ product, onCartUpdate }: any) {
         </button>
       </div>
 
-      <div className="p-4 flex flex-col justify-between flex-1 h-full">
-        <div className="flex flex-col flex-1 justify-between">
+      <div className="p-4">
+        <div className="mb-2">
           <h3 className="font-medium text-gray-900 line-clamp-2 group-hover:text-[#1690C7] transition-colors">
             {product.name}
           </h3>
           <p className="text-sm text-gray-500 mt-1">{product.company}</p>
+        </div>
+
+        <div className="flex items-center mb-2">
           <div className="flex items-center">
             <Star className="h-4 w-4 text-yellow-400 fill-current" />
             <span className="text-sm text-gray-600 ml-1">{product.rating}</span>
           </div>
-          <div className="flex items-center space-x-2 mt-2">
+        </div>
+
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-2">
             <span className="text-lg font-bold text-gray-900">
               ₹{(product.our_price || 0)?.toLocaleString()}
             </span>
@@ -86,7 +92,7 @@ export default function ProductCard({ product, onCartUpdate }: any) {
         <Button
           onClick={handleAddToCart}
           disabled={!product.in_stock || isAddingToCart}
-          className="w-full bg-[#1690C7] mt-4"
+          className="w-full bg-[#1690C7]"
           size="sm"
         >
           {isAddingToCart
@@ -99,4 +105,3 @@ export default function ProductCard({ product, onCartUpdate }: any) {
     </Link>
   );
 }
-           

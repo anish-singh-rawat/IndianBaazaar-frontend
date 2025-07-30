@@ -67,12 +67,6 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
-              <Link
-                to="/about-us"
-                className="text-gray-600 hover:text-[#1690C7] flex items-center space-x-1 transition-colors"
-              >
-                <span>About Us</span>
-              </Link>
               {isAuthenticated ? (
                 <>
                   <Link
@@ -219,7 +213,7 @@ export default function Header() {
             <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center">
                 <img
-                  src="https://www.indianbaazaar.com/IndianBaazaar.png"
+                src="https://www.indianbaazaar.com/IndianBaazaar.png"
                   className="h-8 w-auto"
                 />
               </div>
@@ -256,14 +250,6 @@ export default function Header() {
                   >
                     <User className="h-5 w-5 text-[#1690C7]" />
                     <span className="text-gray-700">My Account</span>
-                  </Link>
-
-                  <Link
-                    to="/about-us"
-                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span className="text-gray-700">About Us</span>
                   </Link>
 
                   <Link
@@ -323,14 +309,6 @@ export default function Header() {
                     <User className="h-4 w-4 mr-2" />
                     Sign In
                   </Button>
-
-                  <Link
-                    to="/about-us"
-                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span className="text-gray-700">About Us</span>
-                  </Link>
 
                   <Link
                     to="/customer-care"

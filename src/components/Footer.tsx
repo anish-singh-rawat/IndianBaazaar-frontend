@@ -33,51 +33,15 @@ export default function Footer() {
               in one place.
             </p>
             <div className="flex space-x-4">
-              <a
-                href="https://www.facebook.com/profile.php?id=61573164884362"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">f</span>
-                </div>
-              </a>
-              <a
-                href="https://x.com/indianbaazaar"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">x</span>
-                </div>
-              </a>
-              <a
-                href="https://t.me/IndianBaazaars"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">t</span>
-                </div>
-              </a>
-              <a
-                href="https://www.instagram.com/indianbaazaar/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">i</span>
-                </div>
-              </a>
-              <a
-                href="https://whatsapp.com/channel/0029Vb7npVK9RZAY5BOvrL1z"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">w</span>
-                </div>
-              </a>
+              <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">f</span>
+              </div>
+              <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">t</span>
+              </div>
+              <div className="w-8 h-8 bg-[#1690C7] rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">i</span>
+              </div>
             </div>
           </div>
 
@@ -129,59 +93,29 @@ export default function Footer() {
           </div>
 
           {/* Categories */}
-          {/* <div className="space-y-4">
+          <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">Categories</h3>
             <ul className="space-y-2">
               <li>
-                <Link
-                  to="/electronics"
-                  className="text-gray-400 hover:text-[#1690C7] text-sm transition-colors"
-                >
-                  Electronics
-                </Link>
+                <span className="text-gray-400 text-sm">Electronics</span>
               </li>
               <li>
-                <Link
-                  to="/fashion"
-                  className="text-gray-400 hover:text-[#1690C7] text-sm transition-colors"
-                >
-                  Fashion & Beauty
-                </Link>
+                <span className="text-gray-400 text-sm">Fashion & Beauty</span>
               </li>
               <li>
-                <Link
-                  to="/books"
-                  className="text-gray-400 hover:text-[#1690C7] text-sm transition-colors"
-                >
-                  Books
-                </Link>
+                <span className="text-gray-400 text-sm">Books</span>
               </li>
               <li>
-                <Link
-                  to="/groceries"
-                  className="text-gray-400 hover:text-[#1690C7] text-sm transition-colors"
-                >
-                  Groceries
-                </Link>
+                <span className="text-gray-400 text-sm">Groceries</span>
               </li>
               <li>
-                <Link
-                  to="/kitchen"
-                  className="text-gray-400 hover:text-[#1690C7] text-sm transition-colors"
-                >
-                  Kitchen
-                </Link>
+                <span className="text-gray-400 text-sm">Kitchen</span>
               </li>
               <li>
-                <Link
-                  to="/kids"
-                  className="text-gray-400 hover:text-[#1690C7] text-sm transition-colors"
-                >
-                  Kids
-                </Link>
+                <span className="text-gray-400 text-sm">Kids</span>
               </li>
             </ul>
-          </div> */}
+          </div>
 
           {/* Support */}
           <div className="space-y-4">
@@ -209,8 +143,7 @@ export default function Footer() {
               <div className="flex items-center space-x-3">
                 <MapPin className="h-4 w-4 text-[#1690C7]" />
                 <span className="text-gray-400 text-sm">
-                  Ludhiana , Punjab ,indian{" "}
-                </span>
+                  Ludhiana , Punjab ,indian                </span>
               </div>
             </div>
           </div>
@@ -253,7 +186,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      {/* <div className="border-t border-gray-800 bg-gray-950">
+      <div className="border-t border-gray-800 bg-gray-950">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <p className="text-gray-400 text-sm">
@@ -281,7 +214,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
     </footer>
   );
 }

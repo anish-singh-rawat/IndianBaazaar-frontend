@@ -9,41 +9,34 @@ export const api = {
     in_stock?: boolean;
   }): Promise<Product[]> {
     try {
-      // Simulate API delay
       const searchParams = new URLSearchParams();
 
-      // Filter by category
       if (params?.category && params.category !== "all") {
-       searchParams.append("category", params.category);
+        searchParams.append("category", params.category);
       }
-
-      // Filter by search term
       if (params?.search) {
         searchParams.append("search", params.search);
       }
-
-      // Filter by stock
       if (params?.in_stock) {
-       searchParams.append("in_stock", "true");
+        searchParams.append("in_stock", "true");
       }
-
       const response = await axiosInstance.get(`/products?${searchParams}`);
 
+      // Ensure we always return an array and transform backend data to frontend format
       const products = Array.isArray(response.data.products) ? response.data.products : [];
       return products.map(transformBackendProductToFrontend);
     } catch (error) {
       console.error("Error fetching products:", error);
-      return []; 
+      return []; // Return empty array on error
     }
   },
 
   async getProductById(id: string): Promise<Product | null> {
     try {
-      // Simulate API delay
       const response = await axiosInstance.get(`/products/${id}`);
       return response.data.product ? transformBackendProductToFrontend(response.data.product) : null;
     } catch (error: any) {
-         if (error.response?.status === 404) {
+      if (error.response?.status === 404) {
         return null;
       }
       console.error("Error fetching product:", error);
@@ -53,8 +46,7 @@ export const api = {
 
   async getProductsReviews(productId: string): Promise<any> {
     try {
-      // Simulate API delay
-     const response = await axiosInstance.get(`/products/${productId}/reviews`);
+      const response = await axiosInstance.get(`/products/${productId}/reviews`);
       return response.data || { reviews: [] };
     } catch (error) {
       console.error("Error fetching product reviews:", error);
@@ -68,10 +60,8 @@ export const api = {
     }
 
     try {
-      // Simulate API delay
-       const response = await axiosInstance.get(`/products/search/suggestions?q=${encodeURIComponent(query)}`);
+      const response = await axiosInstance.get(`/products/search/suggestions?q=${encodeURIComponent(query)}`);
       return response.data.suggestions;
-
     } catch (error) {
       console.error("Error fetching search suggestions:", error);
       return [];
@@ -80,7 +70,6 @@ export const api = {
 
   async getProductsByCategory(category: string): Promise<Product[]> {
     try {
-      // Simulate API delay
       const response = await axiosInstance.get(`/products/category/${category}`);
       const products = Array.isArray(response.data.products) ? response.data.products : [];
       return products.map(transformBackendProductToFrontend);
@@ -132,9 +121,7 @@ function transformBackendProductToFrontend(backendProduct: any): Product {
 }
 
 // Transform frontend product data to backend format
-function transformFrontendProductToBackend(
-  frontendProduct: Partial<Product>,
-): any {
+function transformFrontendProductToBackend(frontendProduct: Partial<Product>): any {
   return {
     name: frontendProduct.name,
     description: frontendProduct.description,
@@ -176,16 +163,14 @@ export const reviewApi = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
     return response.data;
   },
 
   async getProductReviews(productId: string) {
     try {
-      const response = await axiosInstance.get(
-        `/products/${productId}/reviews`,
-      );
+      const response = await axiosInstance.get(`/products/${productId}/reviews`);
       return response.data;
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -198,23 +183,31 @@ export const reviewApi = {
 export const orderApi = {
   async createOrder(orderData: any) {
     const token = localStorage.getItem("authToken");
-    const response = await axiosInstance.post(`/orders`, orderData, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axiosInstance.post(
+      `/orders`,
+      orderData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   },
 
   async verifyPayment(paymentData: any) {
     const token = localStorage.getItem("authToken");
-    const response = await axiosInstance.post(`/payments/verify`, paymentData, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axiosInstance.post(
+      `/payments/verify`,
+      paymentData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   },
 
@@ -279,16 +272,12 @@ export const adminApi = {
   updateProduct: async (productId: string, productData: Partial<Product>) => {
     const token = localStorage.getItem("authToken");
     const backendData = transformFrontendProductToBackend(productData);
-    const response = await axiosInstance.put(
-      `/products/${productId}`,
-      backendData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+    const response = await axiosInstance.put(`/products/${productId}`, backendData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-    );
+    });
     return response.data;
   },
 };
@@ -314,7 +303,7 @@ export const notificationApi = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
     return response.data;
   },
@@ -334,7 +323,7 @@ export const notificationApi = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
     return response.data;
   },
@@ -347,7 +336,7 @@ export const notificationApi = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
     return response.data;
   },
