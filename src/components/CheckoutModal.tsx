@@ -122,7 +122,7 @@ export default function CheckoutModal({
 
       // Initialize Razorpay
       const options = {
-        key: process.env.RAZORPAY_KEY_ID || "rzp_test_key",
+        key: process.env.VITE_RAZORPAY_KEY_ID,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         name: "Your Store",
@@ -189,8 +189,7 @@ export default function CheckoutModal({
 
   return (
     <>
-      {/* Razorpay Script */}
-      <script src="https://checkout.razorpay.com/v1/checkout.js" async />
+      {/* Razorpay script is now loaded dynamically */}
 
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">

@@ -71,10 +71,27 @@ export default function AuthModal({
     }
   };
 
+  // Helper to load Google Identity Services script dynamically
+  const loadGoogleScript = () => {
+    return new Promise<void>((resolve, reject) => {
+      if (typeof window === "undefined") return reject("No window object");
+      if ((window as any).google) return resolve();
+
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject("Failed to load Google Identity Services script");
+      document.head.appendChild(script);
+    });
+  };
+
   const handleGoogleAuth = async () => {
     try {
-      // Check if Google Identity Services is loaded
-      if (typeof window !== 'undefined' && (window as any).google) {
+      await loadGoogleScript();
+
+      if ((window as any).google) {
         (window as any).google.accounts.id.initialize({
           client_id: "475170642955-dv8oqhluhlaedqubkii6skb4n0ttbb5m.apps.googleusercontent.com",
           callback: async (response: any) => {
@@ -97,45 +114,15 @@ export default function AuthModal({
             }
           },
         });
-
         (window as any).google.accounts.id.prompt();
       } else {
-        // Fallback: Load Google Identity Services script
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        script.onload = () => {
-          (window as any).google.accounts.id.initialize({
-            client_id: "475170642955-dv8oqhluhlaedqubkii6skb4n0ttbb5m.apps.googleusercontent.com",
-            callback: async (response: any) => {
-              try {
-                setIsLoading(true);
-                await googleLogin(response.credential);
-                toast({
-                  title: "Success",
-                  description: "Google authentication successful!",
-                });
-                onClose();
-              } catch (error: any) {
-                toast({
-                  title: "Error",
-                  description: error.message || "Google authentication failed",
-                  variant: "destructive",
-                });
-              } finally {
-                setIsLoading(false);
-              }
-            },
-          });
-          (window as any).google.accounts.id.prompt();
-        };
-        document.head.appendChild(script);
+        throw new Error("Google Identity Services not available");
       }
     } catch (error) {
+      console.error("Error initializing Google authentication:", error);
       toast({
         title: "Error",
-        description: "Failed to initialize Google authentication",
+        description: error.message || "Failed to initialize Google authentication",
         variant: "destructive",
       });
     }

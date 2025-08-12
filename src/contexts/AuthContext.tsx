@@ -103,6 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const googleLogin = async (token: string) => {
     try {
       const response = await axiosInstance.post("/auth/google", { token });
+      console.log("response : ", response);
       localStorage.setItem("authToken", response.data.token);
       setUser(response.data.user);
     } catch (error: any) {
