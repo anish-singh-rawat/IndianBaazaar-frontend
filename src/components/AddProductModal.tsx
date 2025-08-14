@@ -106,7 +106,7 @@ export default function AddProductModal({
 
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("image", file);
 
     try {
       const response = await axiosInstance.post("/file/upload-image",

@@ -15,7 +15,7 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    image: "https://i.pinimg.com/564x/c5/4c/8c/c54c8c9833a4e95cfe7a59e4ba70a5d6.jpg",
+    image: "src/assets/removebg-preview.jpg",
     title: "Welcome to IndianBaazaar",
     subtitle: "Your one-stop destination for everything you need",
     ctaText: "Shop Now",
