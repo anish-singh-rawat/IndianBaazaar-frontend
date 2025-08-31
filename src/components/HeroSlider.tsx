@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import axiosInstance from "@/lib/axios";
 
 interface Slide {
   id: number;
@@ -12,67 +13,54 @@ interface Slide {
   backgroundColor: string;
 }
 
-const slides: Slide[] = [
-  {
-    id: 1,
-    image: "src/assets/removebg-preview.jpg",
-    title: "Welcome to IndianBaazaar",
-    subtitle: "Your one-stop destination for everything you need",
-    ctaText: "Shop Now",
-    ctaLink: "#",
-    backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
-  },
-  {
-    id: 2,
-    image: "https://static.vecteezy.com/system/resources/thumbnails/052/923/889/small_2x/happy-diwali-2025-greeting-card-with-stylish-oil-lamp-and-festive-elements-for-diwali-sale-and-special-offers-free-video.jpg",
-    title: "Electronics & Gadgets",
-    subtitle: "Latest smartphones, laptops & accessories at best prices",
-    ctaText: "Explore Electronics",
-    ctaLink: "#",
-   backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
-  },
-  {
-    id: 3,
-    image: "https://static.vecteezy.com/system/resources/previews/050/551/284/non_2x/happy-new-year-sale-2025-design-with-3d-glowing-light-bulb-billboard-typography-lettering-on-brick-wall-background-holiday-special-offer-campaign-discount-illustration-for-coupon-voucher-banner-vector.jpg",
-    title: "Fashion & Beauty",
-    subtitle: "Trendy clothes and premium beauty products for everyone",
-    ctaText: "Shop Fashion",
-    ctaLink: "#",
-   backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
-  },
-  {
-    id: 4,
-    image: "https://t3.ftcdn.net/jpg/04/07/20/56/360_F_407205662_bssMmaxOjmIWYoKosf2flLRmsVl1ZOM1.jpg",
-    title: "Books & Groceries",
-    subtitle: "Fresh groceries delivered daily & bestselling books",
-    ctaText: "Order Now",
-    ctaLink: "#",
-   backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
-  },
-  {
-    id: 5,
-    image: "https://www.shutterstock.com/image-illustration/holi-festival-retail-shopping-banner-260nw-2128498583.jpg",
-    title: "Special Offers",
-    subtitle: "Up to 70% off on selected items - Limited time deals",
-    ctaText: "Grab Deals",
-    ctaLink: "#",
-   backgroundColor: "from-[rgb(22,144,199)] to-[rgb(0,0,0)]",
-  },
-];
-
 export default function HeroSlider() {
+  const [slides, setSlides] = useState<Slide[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    fetchSlides();
+  }, []);
+
+  const fetchSlides = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get("get-event-slides");
+      setSlides(response.data);
+    } catch (err) {
+      console.error("Error fetching sliders:", err);
+      // Fallback to empty array if API fails
+      setSlides([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isAutoPlaying || slides.length === 0) return;
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, slides]);
+
+  if (loading) {
+    return <div className="h-96 flex items-center justify-center">Loading banners...</div>;
+  }
+
+  if (slides.length === 0) {
+    return (
+      <div className="h-96 flex items-center justify-center bg-gradient-to-r from-[rgb(22,144,199)] to-[rgb(0,0,0)]">
+        <div className="text-white text-center">
+          <h2 className="text-2xl font-bold mb-2">No Banners Available</h2>
+          <p>Check back later for exciting offers!</p>
+        </div>
+      </div>
+    );
+  }
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -97,16 +85,15 @@ export default function HeroSlider() {
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
-              index === currentSlide
+            className={`absolute inset-0 transition-transform duration-500 ease-in-out ${index === currentSlide
                 ? "translate-x-0"
                 : index < currentSlide
                   ? "-translate-x-full"
                   : "translate-x-full"
-            }`}
+              }`}
           >
             <div
-              className={`h-full bg-gradient-to-r ${slide.backgroundColor} relative overflow-hidden`}
+              className={`h-full bg-gradient-to-r ${slide.backgroundColor || "from-[rgb(22,144,199)] to-[rgb(0,0,0)]"} relative overflow-hidden`}
             >
               {/* Background Pattern */}
               <div className="absolute inset-0 opacity-10">
@@ -129,20 +116,25 @@ export default function HeroSlider() {
                       {slide.subtitle}
                     </p>
                     <div className="flex flex-wrap gap-4">
+                      {/* Primary Button */}
                       <Button
                         size="lg"
-                        className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-8 py-3 text-lg"
+                        className="bg-blue-600 text-white hover:bg-blue-700 font-semibold px-8 py-3 text-lg shadow-md"
+                        onClick={() => window.location.href = slide.ctaLink}
                       >
-                        {slide.ctaText}
+                        {slide?.cta_text}
                       </Button>
+
+                      {/* Secondary Outline Button */}
                       <Button
                         variant="outline"
                         size="lg"
-                        className="border-white  text-gray-900 font-semibold px-8 py-3 text-lg"
+                        className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-8 py-3 text-lg shadow-md"
                       >
                         Learn More
                       </Button>
                     </div>
+
 
                     {/* Features */}
                     <div className="flex flex-wrap gap-6 pt-4">
@@ -172,6 +164,10 @@ export default function HeroSlider() {
                         src={slide.image}
                         alt={slide.title}
                         className="w-full h-auto max-h-96 object-contain drop-shadow-2xl"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "https://via.placeholder.com/400x200?text=Image+Not+Found";
+                        }}
                       />
                       {/* Decorative elements */}
                       <div className="absolute -top-4 -right-4 w-20 h-20 bg-white/20 rounded-full blur-xl"></div>
@@ -208,11 +204,10 @@ export default function HeroSlider() {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-200 ${
-              index === currentSlide
+            className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-200 ${index === currentSlide
                 ? "bg-white scale-110"
                 : "bg-white/50 hover:bg-white/70"
-            }`}
+              }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}

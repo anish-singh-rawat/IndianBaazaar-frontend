@@ -17,9 +17,12 @@ import {
   Truck,
   Package2,
   XCircle,
+  ImageIcon
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import AddProductModal from "@/components/AddProductModal";
+import AddSliderModal from "@/components/AddSliderModal";
+import UpdateSliderModal from "@/components/UpdateSliderModal";
 import UpdateProductModal from "@/components/UpdateProductModal";
 import { Button } from "@/components/ui/button";
 import { Product, Order, User } from "../../shared/types";
@@ -49,6 +52,16 @@ interface Customer extends User {
   totalSpent: number;
 }
 
+interface Slider {
+  id: number;
+  image: string;
+  title: string;
+  subtitle: string;
+  ctaText?: string;
+  ctaLink?: string;
+  backgroundColor?: string;
+}
+
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [products, setProducts] = useState<Product[]>([]);
@@ -61,6 +74,13 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { refreshNotifications } = useNotifications();
+
+  // Slider states
+  const [sliders, setSliders] = useState<Slider[]>([]);
+  const [isAddSliderModalOpen, setIsAddSliderModalOpen] = useState(false);
+  const [isUpdateSliderModalOpen, setIsUpdateSliderModalOpen] = useState(false);
+  const [selectedSlider, setSelectedSlider] = useState<Slider | null>(null);
+  const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
 
   // Check if user is admin
   if (user?.role !== "admin") {
@@ -81,8 +101,117 @@ export default function Admin() {
     );
   }
 
+  const fetchSliders = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+
+      // API call to get sliders
+      const response = await axiosInstance.get(
+        "/get-event-slides",
+        { headers }
+      );
+
+      setSliders(response.data);
+    } catch (err) {
+      console.error("Failed to fetch sliders", err);
+      // Fallback to empty array if API fails
+      setSliders([]);
+    }
+  };
+
+  const handleAddSlider = async (sliderData: Omit<Slider, "id">) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+
+      // API call to create slider
+      const response = await axiosInstance.post(
+        "/create-event-slides",
+        sliderData,
+        { headers }
+      );
+
+      // Assuming the API returns the created slider with an ID
+      const newSlider = response.data;
+
+      // Update local state
+      setSliders(prev => [...prev, newSlider]);
+
+      // Show success message
+      alert("Banner created successfully!");
+    } catch (err: any) {
+      console.error("Failed to add slider", err);
+      alert(`Error creating banner: ${err.response?.data?.message || err.message}`);
+    }
+  };
+
+  const handleUpdateSlider = async (sliderId: number, sliderData: Partial<Slider>) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+
+      // API call to update slider
+      const response = await axiosInstance.put(
+        `update-event-slides/${sliderId}`,
+        sliderData,
+        { headers }
+      );
+
+      // Update local state
+      setSliders(prev => prev.map(s => s.id === sliderId ? response.data : s));
+      setIsUpdateSliderModalOpen(false);
+      setSelectedSlider(null);
+
+      alert("Banner updated successfully!");
+    } catch (err: any) {
+      console.error("Failed to update slider", err);
+      alert(`Error updating banner: ${err.response?.data?.message || err.message}`);
+    }
+  };
+
+  const handleDeleteSlider = async (sliderId: number) => {
+    if (!confirm("Are you sure you want to delete this banner?")) return;
+
+    try {
+      const token = localStorage.getItem("authToken");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+
+      // API call to delete slider
+      await axiosInstance.delete(
+        `/delete-event-slides/${sliderId}`,
+        { headers }
+      );
+
+      // Remove from local state
+      setSliders(prev => prev.filter(s => s.id !== sliderId));
+      alert("Banner deleted successfully!");
+    } catch (err: any) {
+      console.error("Failed to delete slider", err);
+      alert(`Error deleting banner: ${err.response?.data?.message || err.message}`);
+    }
+  };
+
+  const handleEditSlider = (slider: Slider) => {
+    setSelectedSlider(slider);
+    setIsUpdateSliderModalOpen(true);
+  };
+
   useEffect(() => {
     fetchAdminData();
+    fetchSliders(); // Fetch sliders on component mount
   }, []);
 
   const fetchAdminData = async () => {
@@ -119,7 +248,7 @@ export default function Admin() {
   ) => {
     try {
       const response = await adminApi.createProduct(productData);
-      
+
       setProducts((prev) => [transformBackendProductToFrontend(response.product), ...prev]);
       if (stats) {
         setStats((prev) =>
@@ -229,7 +358,9 @@ export default function Admin() {
     { id: "products", name: "Products", icon: Package },
     { id: "orders", name: "Orders", icon: ShoppingCart },
     { id: "customers", name: "Customers", icon: Users },
+    { id: "sliders", name: "Banners", icon: ImageIcon }, // Changed to ImageIcon for better representation
   ];
+
 
   if (loading && !stats) {
     return (
@@ -339,11 +470,10 @@ export default function Admin() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm ${
-                        activeTab === tab.id
-                          ? "border-primary text-[#1690C7]"
-                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      }`}
+                      className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
+                        ? "border-primary text-[#1690C7]"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                        }`}
                     >
                       <Icon className="h-4 w-4" />
                       {tab.name}
@@ -504,11 +634,10 @@ export default function Admin() {
                             </td>
                             <td className="py-4 px-4">
                               <span
-                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  product.in_stock
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-red-100 text-red-800"
-                                }`}
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${product.in_stock
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
+                                  }`}
                               >
                                 {product.in_stock ? "In Stock" : "Out of Stock"}
                               </span>
@@ -728,8 +857,8 @@ export default function Admin() {
                             <td className="py-4 px-4 text-gray-600">
                               {customer.createdAt
                                 ? new Date(
-                                    customer.createdAt,
-                                  ).toLocaleDateString()
+                                  customer.createdAt,
+                                ).toLocaleDateString()
                                 : "Unknown"}
                             </td>
                           </tr>
@@ -751,6 +880,108 @@ export default function Admin() {
                   )}
                 </div>
               )}
+
+              {/* slider Tab */}
+              {activeTab === "sliders" && (
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-semibold text-gray-900">
+                      Banner Sliders ({sliders.length})
+                    </h2>
+                    <Button onClick={() => setIsAddSliderModalOpen(true)}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Banner
+                    </Button>
+                  </div>
+
+                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {sliders.map((slider) => {
+                      const imageUrl = failedImages.has(slider.id)
+                        ? "https://via.placeholder.com/400x200?text=Banner+Image"
+                        : slider.image;
+
+                      return (
+                        <div key={slider.id} className="bg-white p-4 rounded-lg shadow border">
+                          <img
+                            src={imageUrl}
+                            alt={slider.title}
+                            className="h-40 w-full object-cover rounded"
+                            onError={() => {
+                              // Add to failed images set
+                              setFailedImages(prev => new Set(prev).add(slider.id));
+                            }}
+                          />
+                          <div className="mt-3">
+                            <h3 className="font-bold text-gray-900">{slider.title}</h3>
+                            <p className="text-sm text-gray-600 mt-1">{slider.subtitle}</p>
+                            {slider.ctaText && (
+                              <p className="text-xs text-blue-600 mt-2">
+                                CTA: {slider.ctaText} → {slider.ctaLink}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="flex gap-2 mt-4">
+                            <Button
+                              size="sm"
+                              onClick={() => handleEditSlider(slider)}
+                            >
+                              <Edit className="h-4 w-4 mr-1" />
+                              Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteSlider(slider.id)}
+                            >
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              Delete
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {sliders.length === 0 && (
+                    <div className="text-center py-12 border rounded-lg bg-white">
+                      <ImageIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        No Banners Yet
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        Add banner sliders to showcase promotions and featured products.
+                      </p>
+                      <Button onClick={() => setIsAddSliderModalOpen(true)}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Your First Banner
+                      </Button>
+                    </div>
+                  )}
+
+                  <AddSliderModal
+                    isOpen={isAddSliderModalOpen}
+                    onClose={() => setIsAddSliderModalOpen(false)}
+                    onAdd={(newSlider) => {
+                      // Add the new slider to the list and close the modal
+                      setSliders(prev => [...prev, newSlider]);
+                      setIsAddSliderModalOpen(false);
+                    }}
+                  />
+
+                  <UpdateSliderModal
+                    isOpen={isUpdateSliderModalOpen}
+                    onClose={() => {
+                      setIsUpdateSliderModalOpen(false);
+                      setSelectedSlider(null);
+                    }}
+                    onUpdate={handleUpdateSlider}
+                    slider={selectedSlider}
+                  />
+                </div>
+              )}
+
+
             </div>
           </div>
         </div>
