@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ShoppingBag,
   Truck,
@@ -9,14 +10,47 @@ import {
   MapPin,
 } from "lucide-react";
 
+// Define categories (same as your main page for consistency)
+const categories = [
+  { id: "all", name: "All Products" },
+  { id: "clothes", name: "Clothes" },
+  { id: "beauty", name: "Beauty" },
+  { id: "mice", name: "Mice" },
+  { id: "electronics", name: "Electronics" },
+  { id: "books", name: "Books" },
+  { id: "groceries", name: "Groceries" },
+];
+
 export default function Footer() {
+  const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [currentYear, setCurrentYear] = useState(2025);
+
+  // Set current year on component mount
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
+  // Handle category click - navigate to home page with category filter
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId);
+    
+    // Navigate to home page with category as query parameter
+    navigate(`/?category=${categoryId}`);
+    
+    // Dispatch event to update the main page's category state
+    window.dispatchEvent(new CustomEvent('categoryChange', { 
+      detail: { category: categoryId } 
+    }));
+  };
+
   return (
     <footer className="bg-gray-900 text-white mt-auto">
       {/* Main Footer Content */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
-           <div className="space-y-4">
+          <div className="space-y-4">
             <div className="flex items-center">
               <img
                 src="https://www.indianbaazaar.com/IndianBaazaar.png"
@@ -128,28 +162,24 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Categories */}
+          {/* Categories - Now with state management */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">Categories</h3>
             <ul className="space-y-2">
-              <li>
-                <span className="text-gray-400 text-sm">Electronics</span>
-              </li>
-              <li>
-                <span className="text-gray-400 text-sm">Fashion & Beauty</span>
-              </li>
-              <li>
-                <span className="text-gray-400 text-sm">Books</span>
-              </li>
-              <li>
-                <span className="text-gray-400 text-sm">Groceries</span>
-              </li>
-              <li>
-                <span className="text-gray-400 text-sm">Kitchen</span>
-              </li>
-              <li>
-                <span className="text-gray-400 text-sm">Kids</span>
-              </li>
+              {categories.map((category) => (
+                <li key={category.id}>
+                  <button
+                    onClick={() => handleCategoryClick(category.id)}
+                    className={`text-sm transition-colors ${
+                      selectedCategory === category.id
+                        ? "text-[#1690C7] font-medium"
+                        : "text-gray-400 hover:text-[#1690C7]"
+                    }`}
+                  >
+                    {category.name}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -179,7 +209,8 @@ export default function Footer() {
               <div className="flex items-center space-x-3">
                 <MapPin className="h-4 w-4 text-[#1690C7]" />
                 <span className="text-gray-400 text-sm">
-                  Ludhiana , Punjab ,indian                </span>
+                  Ludhiana, Punjab, India
+                </span>
               </div>
             </div>
           </div>
@@ -226,7 +257,7 @@ export default function Footer() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              &copy; 2025 IndianBaazaar. All rights reserved.
+              &copy; {currentYear} IndianBaazaar. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <Link

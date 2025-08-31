@@ -53,7 +53,7 @@ const categories: Category[] = [
     ],
   },
   {
-    name: "Fastavel",
+    name: "festival",
     subCategories: [
       {
         name: "Quick Delivery",
@@ -346,6 +346,78 @@ const categories: Category[] = [
       },
     ],
   },
+  {
+  name: "Construction",
+  subCategories: [
+    {
+      name: "Cement & Concrete",
+      items: [
+        "Ordinary Portland Cement (OPC)",
+        "Portland Pozzolana Cement (PPC)",
+        "White Cement",
+        "Ready-Mix Concrete",
+        "Concrete Blocks",
+        "Cement Plaster"
+      ]
+    },
+    {
+      name: "Sand & Aggregates",
+      items: [
+        "River Sand",
+        "M-Sand (Manufactured Sand)",
+        "Bajri (Gravel)",
+        "Crushed Stone",
+        "Coarse Aggregates",
+        "Fine Aggregates"
+      ]
+    },
+    {
+      name: "Soil & Earth Materials",
+      items: [
+        "Red Soil",
+        "Black Soil",
+        "Clay Soil",
+        "Top Soil",
+        "Filling Soil",
+        "Earth Excavation Material"
+      ]
+    },
+    {
+      name: "Bricks & Blocks",
+      items: [
+        "Clay Bricks",
+        "Fly Ash Bricks",
+        "AAC Blocks",
+        "Concrete Blocks",
+        "Hollow Blocks",
+        "Interlocking Blocks"
+      ]
+    },
+    {
+      name: "Steel & Metals",
+      items: [
+        "TMT Bars",
+        "Structural Steel",
+        "Steel Rods",
+        "Wires & Mesh",
+        "Aluminium Sections",
+        "GI Sheets"
+      ]
+    },
+    {
+      name: "Other Construction Materials",
+      items: [
+        "Gravel & Stone Chips",
+        "Plaster of Paris (POP)",
+        "Tiles & Flooring",
+        "Paints & Coatings",
+        "Waterproofing Materials",
+        "Construction Chemicals"
+      ]
+    }
+  ]
+}
+
 ];
 
 export default function CategoryNavbar() {

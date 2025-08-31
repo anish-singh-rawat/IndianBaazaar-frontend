@@ -155,11 +155,12 @@ export default function Header() {
                 <ShoppingCart className="h-4 w-4 text-[#1690C7]" />
                 <span>Cart</span>
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-[#1690C7] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-3 -right-3 bg-[#1690C7] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
               </Link>
+
             </div>
 
             {/* Mobile Menu Button */}
@@ -197,23 +198,21 @@ export default function Header() {
 
         {/* Mobile Menu Overlay */}
         <div
-          className={`fixed inset-0 bg-black transition-opacity duration-300 z-50 md:hidden ${
-            isMobileMenuOpen
+          className={`fixed inset-0 bg-black transition-opacity duration-300 z-50 md:hidden ${isMobileMenuOpen
               ? "bg-opacity-50"
               : "bg-opacity-0 pointer-events-none"
-          }`}
+            }`}
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <div
-            className={`fixed inset-y-0 right-0 w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
-              isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-            }`}
+            className={`fixed inset-y-0 right-0 w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+              }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center">
                 <img
-                src="https://www.indianbaazaar.com/IndianBaazaar.png"
+                  src="https://www.indianbaazaar.com/IndianBaazaar.png"
                   className="h-8 w-auto"
                 />
               </div>
