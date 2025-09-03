@@ -976,7 +976,7 @@ export default function Admin() {
                       setSelectedSlider(null);
                     }}
                     onUpdate={handleUpdateSlider}
-                    slider={selectedSlider}
+                    slide={selectedSlider}
                   />
                 </div>
               )}

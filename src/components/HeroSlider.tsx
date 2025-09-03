@@ -8,7 +8,7 @@ interface Slide {
   image: string;
   title: string;
   subtitle: string;
-  ctaText: string;
+  cta_text: string;
   ctaLink: string;
   backgroundColor: string;
 }

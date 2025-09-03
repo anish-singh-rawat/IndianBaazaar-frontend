@@ -3,21 +3,32 @@ import { Fragment, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// import adminApi from "@/lib/adminApi";
+
+interface Slider {
+  id: number;
+  image: string;
+  title: string;
+  subtitle: string;
+  ctaText?: string;
+  ctaLink?: string;
+  backgroundColor?: string;
+}
 
 interface UpdateSliderModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpdate: () => void; // callback to refresh list
-  slide: any; // the banner being edited
+  onUpdate: (sliderId: number, sliderData: Partial<Slider>) => Promise<void>; // Updated signature
+  slide: Slider | null; // the banner being edited
 }
 
 export default function UpdateSliderModal({ isOpen, onClose, onUpdate, slide }: UpdateSliderModalProps) {
-  const [formData, setFormData] = useState(slide);
+  const [formData, setFormData] = useState<Partial<Slider>>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setFormData(slide);
+    if (slide) {
+      setFormData({ ...slide });
+    }
   }, [slide]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,16 +36,17 @@ export default function UpdateSliderModal({ isOpen, onClose, onUpdate, slide }: 
   };
 
   const handleSubmit = async () => {
-    // setLoading(true);
-    // try {
-    //   await adminApi.updateSlider(slide.id, formData);
-    //   onUpdate();
-    //   onClose();
-    // } catch (err) {
-    //   console.error("Failed to update slider", err);
-    // } finally {
-    //   setLoading(false);
-    // }
+    if (!slide) return;
+    
+    setLoading(true);
+    try {
+      await onUpdate(slide.id, formData); // Pass both parameters
+      onClose();
+    } catch (err) {
+      console.error("Failed to update slider", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!slide) return null;
@@ -61,27 +73,52 @@ export default function UpdateSliderModal({ isOpen, onClose, onUpdate, slide }: 
               <div className="mt-4 space-y-4">
                 <div>
                   <Label htmlFor="image">Image URL</Label>
-                  <Input name="image" value={formData.image || ""} onChange={handleChange} />
+                  <Input 
+                    name="image" 
+                    value={formData.image || ""} 
+                    onChange={handleChange} 
+                  />
                 </div>
                 <div>
                   <Label htmlFor="title">Title</Label>
-                  <Input name="title" value={formData.title || ""} onChange={handleChange} />
+                  <Input 
+                    name="title" 
+                    value={formData.title || ""} 
+                    onChange={handleChange} 
+                  />
                 </div>
                 <div>
                   <Label htmlFor="subtitle">Subtitle</Label>
-                  <Input name="subtitle" value={formData.subtitle || ""} onChange={handleChange} />
+                  <Input 
+                    name="subtitle" 
+                    value={formData.subtitle || ""} 
+                    onChange={handleChange} 
+                  />
                 </div>
                 <div>
                   <Label htmlFor="ctaText">CTA Text</Label>
-                  <Input name="ctaText" value={formData.ctaText || ""} onChange={handleChange} />
+                  <Input 
+                    name="ctaText" 
+                    value={formData.ctaText || ""} 
+                    onChange={handleChange} 
+                  />
                 </div>
                 <div>
                   <Label htmlFor="ctaLink">CTA Link</Label>
-                  <Input name="ctaLink" value={formData.ctaLink || ""} onChange={handleChange} />
+                  <Input 
+                    name="ctaLink" 
+                    value={formData.ctaLink || ""} 
+                    onChange={handleChange} 
+                  />
                 </div>
                 <div>
                   <Label htmlFor="backgroundColor">Background Color</Label>
-                  <Input type="color" name="backgroundColor" value={formData.backgroundColor || "#f3f4f6"} onChange={handleChange} />
+                  <Input 
+                    type="color" 
+                    name="backgroundColor" 
+                    value={formData.backgroundColor || "#f3f4f6"} 
+                    onChange={handleChange} 
+                  />
                 </div>
               </div>
 
