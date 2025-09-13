@@ -86,10 +86,10 @@ export default function HeroSlider() {
           <div
             key={slide.id}
             className={`absolute inset-0 transition-transform duration-500 ease-in-out ${index === currentSlide
-                ? "translate-x-0"
-                : index < currentSlide
-                  ? "-translate-x-full"
-                  : "translate-x-full"
+              ? "translate-x-0"
+              : index < currentSlide
+                ? "-translate-x-full"
+                : "translate-x-full"
               }`}
           >
             <div
@@ -166,9 +166,12 @@ export default function HeroSlider() {
                         className="w-full h-auto max-h-96 object-contain drop-shadow-2xl"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          target.src = "https://via.placeholder.com/400x200?text=Image+Not+Found";
+                          if (target.src !== "https://via.placeholder.com/400x200?text=Image+Not+Found") {
+                            target.src = "https://via.placeholder.com/400x200?text=Image+Not+Found";
+                          }
                         }}
                       />
+
                       {/* Decorative elements */}
                       <div className="absolute -top-4 -right-4 w-20 h-20 bg-white/20 rounded-full blur-xl"></div>
                       <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/20 rounded-full blur-xl"></div>
@@ -205,8 +208,8 @@ export default function HeroSlider() {
             key={index}
             onClick={() => goToSlide(index)}
             className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-200 ${index === currentSlide
-                ? "bg-white scale-110"
-                : "bg-white/50 hover:bg-white/70"
+              ? "bg-white scale-110"
+              : "bg-white/50 hover:bg-white/70"
               }`}
             aria-label={`Go to slide ${index + 1}`}
           />
